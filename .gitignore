@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+
+# Raw save packs and local source saves are useful test data, but too bulky/noisy
+# for normal git history in this workspace.
+CemuSave/
+GameCubeSave/
+TP Saves (Cemu)/
+Twilight Princess Any% Savefiles NTSC/
+TP 100% Saves - NTSC-U 6.17.20/
+
+# Generated converter/probe outputs.
+artifacts/
+probe-exports/
+*.gci
+*.dat

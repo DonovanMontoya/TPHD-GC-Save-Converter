@@ -1,0 +1,34 @@
+rule,confidence,gc_offset,hd_offset,size,hd_stage,exact_reference_matches,reference_unique_sequences,min_byte_distance_to_reference,hd_nonzero_bytes,positions_outside_reference,first_outside_relative_offsets,hd_bytes
+player.status_a.max_life,observed,0x000,0x002,2,,4,33,0,1,0,,00 17
+player.status_a.life,observed,0x002,0x004,2,,33,27,0,1,0,,00 0c
+player.status_a.rupees,observed,0x004,0x006,2,+T`B�,0,34,1,2,1,01,01 2b
+player.status_a.max_oil,observed,0x006,0x008,2,T`B�,104,2,0,2,0,,54 60
+player.status_a.oil,observed,0x008,0x00a,2,B�,0,23,2,2,2,00 01,42 e9
+player.status_a.unknown10,observed,0x00a,0x00c,1,,105,1,0,0,0,,00
+player.status_a.select_items,observed,0x00b,0x00d,4,,0,50,2,3,2,01 02,01 0c 00 ff
+player.status_a.mix_items,observed,0x00f,0x011,4,����/(*�,97,3,0,4,0,,ff ff ff ff
+player.status_a.equipment,observed,0x013,0x015,6,/(*��,0,13,1,5,1,03,2f 28 2a b4 ff 00
+player.status_a.wallet_size,observed,0x019,0x01b,1,,69,3,0,0,0,,00
+player.status_a.magic,observed,0x01a,0x01c,4,,105,1,0,0,0,,00 00 00 00
+player.status_a.transform_status,observed,0x01e,0x020,1,,30,2,0,1,0,,01
+player.status_b,observed,0x028,0x028,24,,0,105,8,10,5,01 02 03 05 15,00 b4 b2 a9 e2 5a 5c b0 03 01 00 00 00 00 00 00 00 00 00 00 00 e4 00 00
+player.horse_place,observed,0x040,0x040,24,F_SP104,0,18,12,19,9,00 01 02 03 05 08 09 0a 0b,41 af 63 41 c6 1c 40 00 c2 38 5d 40 00 00 46 5f 53 50 31 30 34 00 00 01
+player.return_place,load_unsafe,0x058,0x058,12,F_SP121,1,82,0,10,0,,46 5f 53 50 31 32 31 00 06 03 15 00
+player.field_last_stay,observed,0x064,0x064,28,F_SP108,0,70,12,20,5,01 02 05 09 0a,c7 0e 30 00 43 96 00 00 c6 7f 78 00 c0 00 46 5f 53 50 31 30 38 00 06 02 01 0e 00 00
+player.last_mark,observed,0x080,0x080,28,,0,7,1,2,1,14,00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 37 00 00 00 ff 00 00 00
+player.items,observed,0x09c,0x09c,48,@H������,0,33,3,47,3,0b 0c 1d,40 48 ff ff ff ff ff ff ff ff ff 6c 61 ff ff ff ff ff ff ff 4a ff ff 4b 00 01 17 14 0b 0c ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+player.get_item_flags,observed,0x0cc,0x0cc,32,,0,66,10,14,9,01 03 04 06 07 12 15 1c 1e,00 0c 00 1f 80 00 85 7f 00 00 0d 01 00 00 00 20 20 00 02 00 00 10 00 02 00 00 00 00 40 00 60 00
+player.item_record,observed,0x0ec,0x0ec,12,,0,30,1,1,1,08,00 00 00 00 00 00 00 00 32 00 00 00
+player.item_max,observed,0x0f8,0x0f8,8,"
+",69,3,0,7,0,,1e 1e 0f 1e 1e 1e 0a 00
+player.collect,observed,0x100,0x100,16,,0,40,2,6,2,01 0d,01 05 01 00 00 00 00 00 00 01 00 ff 00 80 00 00
+player.wolf,observed,0x110,0x110,4,,105,1,0,0,0,,00 00 00 00
+player.light_drop,observed,0x114,0x114,8,,0,10,1,2,1,00,0c 00 00 00 01 00 00 00
+player.letter_info,observed,0x11c,0x11c,80,,0,3,3,3,3,03 0b 10,00 00 00 08 00 00 00 00 00 00 00 08 00 00 00 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+player.fishing_info,observed,0x16c,0x16c,52,,0,2,2,2,2,0b 25,00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 1b 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+player.info.total_time,observed,0x1a8,0x1a8,8,,0,105,3,5,2,04 05,00 00 00 c1 78 2c 83 46
+player.info.death_count,observed,0x1b2,0x1b2,2,,22,3,0,1,0,,00 01
+player.info.player_name,observed,0x1b4,0x1b4,16,Link,45,2,0,4,0,,4c 69 6e 6b 00 00 00 00 00 00 00 00 00 00 00 00
+player.info.horse_name,observed,0x1c5,0x1c5,16,Epona,45,2,0,5,0,,45 70 6f 6e 61 00 00 00 00 00 00 00 00 00 00 00
+player.info.clear_count,observed,0x1d6,0x1d6,1,,105,1,0,0,0,,00
+minigame_records,observed,0x940,0x940,24,,70,4,0,3,0,,00 00 00 00 00 01 d4 c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00

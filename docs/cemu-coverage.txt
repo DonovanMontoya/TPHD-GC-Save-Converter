@@ -1,0 +1,12 @@
+TPHD body bytes: 0xdf8 (3576)
+known          0 bytes    0.0%
+observed     826 bytes   23.1%
+observed_constant    17 bytes    0.5%
+structural  1792 bytes   50.1%
+sample_zero   926 bytes   25.9%
+hd_only       15 bytes    0.4%
+unknown        0 bytes    0.0%
+mapped      2635 bytes   73.7%
+classified  3576 bytes  100.0%
+
+Unmapped/unknown ranges:

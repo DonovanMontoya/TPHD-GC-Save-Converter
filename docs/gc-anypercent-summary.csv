@@ -1,0 +1,46 @@
+path,game_id,slot,label,checksum_ok,player_name,horse_name,return_stage,max_life,life,rupees,max_oil,oil,select_items,mix_items,equipment,wallet_size,transform,nonzero
+Twilight Princess Any% Savefiles NTSC/1 Goats-Hugo-PurpleMist.gci,GZ2E01,0,Goats,True,Link,Epona,F_SP00,15,10,0,21600,20573,ff 01 ff ff,ff ff ff ff,2f 28 2c ff ff 00,0,0,365
+Twilight Princess Any% Savefiles NTSC/1 Goats-Hugo-PurpleMist.gci,GZ2E01,1,Hugo,True,Link,Epona,F_SP104,15,12,1,21600,18047,ff 01 ff ff,ff ff ff ff,2f 28 2c ff ff 00,0,1,418
+Twilight Princess Any% Savefiles NTSC/1 Goats-Hugo-PurpleMist.gci,GZ2E01,2,PurpleMist (Human),True,Link,Epona,F_SP108,15,12,1,21600,11854,01 ff ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,414
+Twilight Princess Any% Savefiles NTSC/10 Arbiters1-Poe1Skip-DeathSword.gci,GZ2E01,0,Arbiter's Ground Entrance,True,Link,Epona,D_MN10,21,16,230,21600,6906,09 01 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,625
+Twilight Princess Any% Savefiles NTSC/10 Arbiters1-Poe1Skip-DeathSword.gci,GZ2E01,1,Poe 1 Skip,True,Link,Epona,D_MN10,21,14,235,21600,6107,10 00 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,681
+Twilight Princess Any% Savefiles NTSC/10 Arbiters1-Poe1Skip-DeathSword.gci,GZ2E01,2,Death Sword (spawn in Bossroom),True,Link,Epona,D_MN10B,21,14,300,21600,6107,09 06 b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,0,434
+Twilight Princess Any% Savefiles NTSC/11 Arbiters2-Stallord-MirrorChamber.gci,GZ2E01,0,Arbiter2 (after Spinner),True,Link,Epona,D_MN10,21,16,300,21600,5338,02 00 b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,0,657
+Twilight Princess Any% Savefiles NTSC/11 Arbiters2-Stallord-MirrorChamber.gci,GZ2E01,1,Stallord,True,Link,Epona,D_MN10A,21,16,300,21600,5338,02 00 b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,0,704
+Twilight Princess Any% Savefiles NTSC/11 Arbiters2-Stallord-MirrorChamber.gci,GZ2E01,2,Mirror Chamber,True,Link,Epona,F_SP125,26,20,300,21600,5338,02 00 b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,0,442
+Twilight Princess Any% Savefiles NTSC/12 EarlyCitS-CitS1-ArealfosSkip.gci,GZ2E01,0,Early CitS (spawn in Basement),True,Link,Epona,R_SP209,26,20,300,21600,5338,09 00 b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,0,662
+Twilight Princess Any% Savefiles NTSC/12 EarlyCitS-CitS1-ArealfosSkip.gci,GZ2E01,1,CitS 1 (spawn after Cannon),True,Link,Epona,D_MN07,25,18,0,21600,15017,00 09 b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,0,445
+Twilight Princess Any% Savefiles NTSC/12 EarlyCitS-CitS1-ArealfosSkip.gci,GZ2E01,2,Areaflos Skip (spawn in fight),True,Link,Epona,D_MN07B,25,12,1,21600,15017,03 09 b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,0,461
+Twilight Princess Any% Savefiles NTSC/13 CitS2-FanTower-Argorok.gci,GZ2E01,0,"CitS 2 (after Double Clawshots, before Early Boss Key)",True,Link,Epona,D_MN07,25,12,1,21600,15017,03 ff b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,0,679
+Twilight Princess Any% Savefiles NTSC/13 CitS2-FanTower-Argorok.gci,GZ2E01,1,Fan Tower before Argorok,True,Link,Epona,D_MN07,25,12,1,21600,15017,00 0a b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,0,462
+Twilight Princess Any% Savefiles NTSC/13 CitS2-FanTower-Argorok.gci,GZ2E01,2,Argorok (spawn under Argorok before Vine Clawshot),True,Link,Epona,D_MN07A,25,12,1,21600,15017,00 0a b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,0,463
+Twilight Princess Any% Savefiles NTSC/14 PoT1-PoT2-EarlyPlatform.gci,GZ2E01,0,Palace of Twilight 1,True,Link,Epona,D_MN08,25,12,3,21600,15017,03 0a b2 ff,ff ff ff ff,2f 29 2c b2 ff 00,0,1,680
+Twilight Princess Any% Savefiles NTSC/14 PoT1-PoT2-EarlyPlatform.gci,GZ2E01,1,Palace of Twilight 2 (after Light Sword),True,Link,Epona,D_MN08,25,12,8,21600,15017,00 0a b2 ff,ff ff ff ff,2f 49 2c b2 ff 00,0,0,475
+Twilight Princess Any% Savefiles NTSC/14 PoT1-PoT2-EarlyPlatform.gci,GZ2E01,2,Early Platform (spawns with Door Cutscene),True,Link,Epona,D_MN08,25,12,8,21600,15017,00 0a b2 ff,ff ff ff ff,2f 49 2c b2 ff 00,0,0,482
+Twilight Princess Any% Savefiles NTSC/15 ZantGM-Lakebed-SPR NTSC.gci,GZ2E01,0,Zant Goron Mines,True,Link,Epona,D_MN08D,25,14,8,21600,15017,0a 00 b2 ff,ff ff ff ff,2f 49 2c b2 ff 00,0,0,701
+Twilight Princess Any% Savefiles NTSC/15 ZantGM-Lakebed-SPR NTSC.gci,GZ2E01,1,Zant Lakebed,True,Link,Epona,D_MN08D,25,14,8,21600,15017,0a 00 b2 ff,ff ff ff ff,2f 49 2c b2 ff 00,0,0,484
+Twilight Princess Any% Savefiles NTSC/15 ZantGM-Lakebed-SPR NTSC.gci,GZ2E01,2,Zant Snowpeak,True,Link,Epona,D_MN08D,25,14,8,21600,15017,0a 00 b2 ff,ff ff ff ff,2f 49 2c b2 ff 00,0,0,483
+Twilight Princess Any% Savefiles NTSC/2 BiTRooftops-BiTGrove-BiTESave.gci,GZ2E01,0,BiT Rooftops,True,Link,Epona,R_SP107,15,12,1,21600,20516,ff 01 ff ff,ff ff ff ff,2f 28 2c ff ff 00,0,1,390
+Twilight Princess Any% Savefiles NTSC/2 BiTRooftops-BiTGrove-BiTESave.gci,GZ2E01,1,BiT Grove,True,Link,Epona,F_SP117,15,12,1,21600,18047,ff 01 ff ff,ff ff ff ff,2f 28 2c ff ff 00,0,1,425
+Twilight Princess Any% Savefiles NTSC/2 BiTRooftops-BiTGrove-BiTESave.gci,GZ2E01,2,Bo-Savefile (BiTE),True,Link,Epona,R_SP01,15,10,0,21600,20573,ff 01 ff ff,ff ff ff ff,2f 28 2c ff ff 00,0,0,376
+Twilight Princess Any% Savefiles NTSC/3 EMS-GorgeVoid-LanayruGateClip.gci,GZ2E01,0,EMS (spawns in front of the Shadow Beasts),True,Link,Epona,F_SP108,15,12,1,21600,18047,ff 01 ff ff,ff ff ff ff,2f 28 2c ff ff 00,0,1,402
+Twilight Princess Any% Savefiles NTSC/3 EMS-GorgeVoid-LanayruGateClip.gci,GZ2E01,1,Gorge Void (spawns in front of Shadow Beasts),True,Link,Epona,F_SP121,15,12,2,21600,7166,00 03 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,1,456
+Twilight Princess Any% Savefiles NTSC/3 EMS-GorgeVoid-LanayruGateClip.gci,GZ2E01,2,"Lanayru Gate Clip (after Gorge Void, right in Front of the Gate)",True,Link,Epona,F_SP121,15,10,12,21600,7166,00 03 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,448
+Twilight Princess Any% Savefiles NTSC/4 EponaOOB-RupeeRoll-EldinVessel.gci,GZ2E01,0,EponaOOB (before calling Epona),True,Link,Epona,F_SP121,15,6,2,21600,7166,00 03 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,484
+Twilight Princess Any% Savefiles NTSC/4 EponaOOB-RupeeRoll-EldinVessel.gci,GZ2E01,1,Rupee Roll (missed Gorge Void),True,Link,Epona,F_SP121,15,12,2,21600,7166,00 03 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,1,531
+Twilight Princess Any% Savefiles NTSC/4 EponaOOB-RupeeRoll-EldinVessel.gci,GZ2E01,2,Eldin Vessel (spawns right before Vessel),True,Link,Epona,F_SP109,15,8,12,21600,7166,00 03 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,1,270
+Twilight Princess Any% Savefiles NTSC/5 PillarClip-Lakebed1-DekuToad.gci,GZ2E01,0,Pillar Clip (spawns in Cutscene),True,Link,Epona,F_SP115,15,10,12,21600,7166,00 03 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,448
+Twilight Princess Any% Savefiles NTSC/5 PillarClip-Lakebed1-DekuToad.gci,GZ2E01,1,Lakebed (after Pillar Clip),True,Link,Epona,D_MN01,15,12,12,21600,7166,00 03 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,474
+Twilight Princess Any% Savefiles NTSC/5 PillarClip-Lakebed1-DekuToad.gci,GZ2E01,2,Deku Toad (spawn in Bossroom),True,Link,Epona,D_MN01B,15,10,12,21600,7166,00 03 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,468
+Twilight Princess Any% Savefiles NTSC/6 Kargarok Skip-LanayVessel-BossBug.gci,GZ2E01,0,Kargarok Skip (after Ooccoo out),True,Link,Epona,F_SP115,15,12,12,21600,7166,03 12 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,1,521
+Twilight Princess Any% Savefiles NTSC/6 Kargarok Skip-LanayVessel-BossBug.gci,GZ2E01,1,Lanayru Vessel,True,Link,Epona,F_SP115,15,12,20,21600,7166,00 03 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,1,597
+Twilight Princess Any% Savefiles NTSC/6 Kargarok Skip-LanayVessel-BossBug.gci,GZ2E01,2,Boss Bug,True,Link,Epona,F_SP115,15,12,22,21600,7166,00 03 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,1,358
+Twilight Princess Any% Savefiles NTSC/7 SP-MapGlitch-Cave-Snowpeak.gci,GZ2E01,0,Map Glitch (before Snowpeak Mountain),True,Link,Epona,F_SP114,15,12,22,21600,7166,09 10 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,1,593
+Twilight Princess Any% Savefiles NTSC/7 SP-MapGlitch-Cave-Snowpeak.gci,GZ2E01,1,Cave (Transition after Howling Stone),True,Link,Epona,F_SP114,15,12,22,21600,7166,09 10 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,640
+Twilight Princess Any% Savefiles NTSC/7 SP-MapGlitch-Cave-Snowpeak.gci,GZ2E01,2,Snowpeak Dungeon,True,Link,Epona,D_MN11,15,12,22,21600,7166,00 09 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,377
+Twilight Princess Any% Savefiles NTSC/8 FreezardSkip-LakebedBKSkip-Morpheel.gci,GZ2E01,0,Freezard Skip,True,Link,Epona,D_MN11,15,8,23,21600,7166,00 10 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,600
+Twilight Princess Any% Savefiles NTSC/8 FreezardSkip-LakebedBKSkip-Morpheel.gci,GZ2E01,1,Lakebed Boss Key Skip (spawns in Main Room),True,Link,Epona,D_MN01,15,12,152,21600,7166,03 09 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,652
+Twilight Princess Any% Savefiles NTSC/8 FreezardSkip-LakebedBKSkip-Morpheel.gci,GZ2E01,2,Morpheel (approach the hole to trigger Cutscene),True,Link,Epona,D_MN01A,16,12,152,21600,7166,03 09 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,391
+Twilight Princess Any% Savefiles NTSC/9 MDH-MDHCastle-Desert.gci,GZ2E01,0,Midna's desperate Hour,True,Link,Epona,F_SP122,16,12,252,21600,7166,06 09 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,1,612
+Twilight Princess Any% Savefiles NTSC/9 MDH-MDHCastle-Desert.gci,GZ2E01,1,MDH Castle,True,Link,Epona,R_SP116,16,10,252,21600,7166,06 09 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,1,655
+Twilight Princess Any% Savefiles NTSC/9 MDH-MDHCastle-Desert.gci,GZ2E01,2,Desert,True,Link,Epona,F_SP124,21,16,230,21600,6906,06 00 ff ff,ff ff ff ff,2f 29 2c ff ff 00,0,0,407

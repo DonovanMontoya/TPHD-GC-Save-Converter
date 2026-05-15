@@ -1,0 +1,61 @@
+path,game_id,slot,label,checksum_ok,player_name,horse_name,return_stage,max_life,life,rupees,max_oil,oil,select_items,mix_items,equipment,wallet_size,transform,nonzero
+"TP 100% Saves - NTSC-U 6.17.20/01 - Goats 1, Goats 2, Sewers.gci",GZ2E01,0,Goats 1,True,Taka,Honoka,F_SP00,15,12,3,0,0,ff ff ff ff,ff ff ff ff,2e ff ff ff ff 00,0,0,382
+"TP 100% Saves - NTSC-U 6.17.20/01 - Goats 1, Goats 2, Sewers.gci",GZ2E01,1,Goats 2,True,Taka,Honoka,F_SP00,16,12,8,21600,18792,01 17 ff ff,ff ff ff ff,2e ff ff ff ff 00,0,0,472
+"TP 100% Saves - NTSC-U 6.17.20/01 - Goats 1, Goats 2, Sewers.gci",GZ2E01,2,Sewers,True,Taka,Honoka,R_SP107,16,12,9,21600,18792,01 17 ff ff,ff ff ff ff,2e ff ff ff ff 00,0,1,218
+"TP 100% Saves - NTSC-U 6.17.20/02 - S+S, Faron Twilight, EMS.gci",GZ2E01,0,Sword + Shield,True,Taka,Honoka,F_SP104,16,12,9,21600,18792,01 17 ff ff,ff ff ff ff,2f ff ff ff ff 00,0,1,449
+"TP 100% Saves - NTSC-U 6.17.20/02 - S+S, Faron Twilight, EMS.gci",GZ2E01,1,Faron Twilight,True,Taka,Honoka,F_SP108,16,12,9,21600,18792,01 17 ff ff,ff ff ff ff,2f 28 2a ff ff 00,0,1,495
+"TP 100% Saves - NTSC-U 6.17.20/02 - S+S, Faron Twilight, EMS.gci",GZ2E01,2,Early Master Sword,True,Taka,Honoka,F_SP108,16,12,9,21600,18792,01 17 ff ff,ff ff ff ff,2f 28 2a ff ff 00,0,1,256
+"TP 100% Saves - NTSC-U 6.17.20/03 - FT, FT 2, Diababa.gci",GZ2E01,0,Forest Temple,True,Taka,Honoka,D_MN05,16,12,21,21600,13901,01 17 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,493
+"TP 100% Saves - NTSC-U 6.17.20/03 - FT, FT 2, Diababa.gci",GZ2E01,1,Forest Temple 2,True,Taka,Honoka,D_MN05,16,12,21,21600,12208,01 00 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,552
+"TP 100% Saves - NTSC-U 6.17.20/03 - FT, FT 2, Diababa.gci",GZ2E01,2,Diababa,True,Taka,Honoka,D_MN05A,18,12,21,21600,11661,01 00 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,299
+"TP 100% Saves - NTSC-U 6.17.20/04 - Post FT, Eldin, Post Eldin.gci",GZ2E01,0,Post Forest Temple,True,Taka,Honoka,F_SP108,23,16,21,21600,11664,01 00 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,520
+"TP 100% Saves - NTSC-U 6.17.20/04 - Post FT, Eldin, Post Eldin.gci",GZ2E01,1,Eldin Twilight,True,Taka,Honoka,F_SP109,23,16,21,21600,11664,01 00 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,1,579
+"TP 100% Saves - NTSC-U 6.17.20/04 - Post FT, Eldin, Post Eldin.gci",GZ2E01,2,Post Eldin Twilight,True,Taka,Honoka,F_SP109,23,16,49,21600,11664,01 00 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,1,340
+"TP 100% Saves - NTSC-U 6.17.20/05 - Post IB, Pillar Clip, Lakebed.gci",GZ2E01,0,Post Iron Boots,True,Taka,Honoka,F_SP00,23,16,151,21600,11664,01 00 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,559
+"TP 100% Saves - NTSC-U 6.17.20/05 - Post IB, Pillar Clip, Lakebed.gci",GZ2E01,1,Pillar Clip,True,Taka,Honoka,F_SP115,25,20,151,21600,11664,03 00 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,614
+"TP 100% Saves - NTSC-U 6.17.20/05 - Post IB, Pillar Clip, Lakebed.gci",GZ2E01,2,Lakebed 1,True,Taka,Honoka,D_MN01,25,20,151,21600,11664,03 00 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,353
+"TP 100% Saves - NTSC-U 6.17.20/06 - Lakebed 2, Lanayru, Post Lanayru.gci",GZ2E01,0,Lakebed 2,True,Taka,Honoka,D_MN01,26,20,156,21600,11664,03 00 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,585
+"TP 100% Saves - NTSC-U 6.17.20/06 - Lakebed 2, Lanayru, Post Lanayru.gci",GZ2E01,1,Lanayru Twilight,True,Taka,Honoka,F_SP115,26,20,156,21600,11664,03 12 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,1,662
+"TP 100% Saves - NTSC-U 6.17.20/06 - Lakebed 2, Lanayru, Post Lanayru.gci",GZ2E01,2,Post Lanayru Twilight,True,Taka,Honoka,F_SP115,26,20,160,21600,11664,03 12 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,1,419
+"TP 100% Saves - NTSC-U 6.17.20/07 - KB2 skip, Coro TD, GM.gci",GZ2E01,0,Bulblin 2 Skip,True,Taka,Honoka,R_SP116,27,20,60,21600,11078,00 09 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,644
+"TP 100% Saves - NTSC-U 6.17.20/07 - KB2 skip, Coro TD, GM.gci",GZ2E01,1,Coro Text Displacement,True,Taka,Honoka,F_SP108,27,20,165,21600,11078,00 12 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,685
+"TP 100% Saves - NTSC-U 6.17.20/07 - KB2 skip, Coro TD, GM.gci",GZ2E01,2,Goron Mines,True,Taka,Honoka,D_MN04,27,16,95,21600,11078,00 12 ff ff,ff ff ff ff,2f 29 2a ff ff 00,0,0,427
+"TP 100% Saves - NTSC-U 6.17.20/08 - Post GM, BK skip, MDH.gci",GZ2E01,0,Post Goron Mines,True,Taka,Honoka,F_SP109,34,24,145,21600,11078,03 04 ff ff,ff ff ff ff,31 29 2a ff ff 00,0,0,674
+"TP 100% Saves - NTSC-U 6.17.20/08 - Post GM, BK skip, MDH.gci",GZ2E01,1,Lakebed Boss Key Skip,True,Taka,Honoka,D_MN01,38,28,58,21600,11078,03 09 ff ff,ff ff ff ff,31 29 2a ff ff 00,0,0,731
+"TP 100% Saves - NTSC-U 6.17.20/08 - Post GM, BK skip, MDH.gci",GZ2E01,2,Midna's Desperate Hour,True,Taka,Honoka,F_SP115,44,32,58,21600,11078,01 09 ff ff,ff ff ff ff,31 29 2a ff ff 00,0,0,461
+"TP 100% Saves - NTSC-U 6.17.20/09 - Post MDH, Iza skip, Lake Cave.gci",GZ2E01,0,Post Midna's Desperate Hour,True,Taka,Honoka,F_SP122,44,32,498,21600,10788,01 09 ff ff,ff ff ff ff,31 29 2a ff ff 00,1,1,704
+"TP 100% Saves - NTSC-U 6.17.20/09 - Post MDH, Iza skip, Lake Cave.gci",GZ2E01,1,Iza 1 Skip,True,Taka,Honoka,F_SP115,47,32,498,21600,8580,0f 09 ff ff,ff ff ff ff,31 29 2a ff ff 00,1,1,774
+"TP 100% Saves - NTSC-U 6.17.20/09 - Post MDH, Iza skip, Lake Cave.gci",GZ2E01,2,Lake Hylia Cave,True,Taka,Honoka,D_SB03,47,28,478,21600,8580,01 11 ff ff,ff 04 ff ff,31 29 2a ff ff 00,1,0,510
+"TP 100% Saves - NTSC-U 6.17.20/10 - Desert, Camp, AG1.gci",GZ2E01,0,Desert,True,Taka,Honoka,F_SP124,48,36,480,21600,7716,ff 09 ff ff,ff ff ff ff,31 29 2a ff ff 00,1,0,747
+"TP 100% Saves - NTSC-U 6.17.20/10 - Desert, Camp, AG1.gci",GZ2E01,1,Bulblin Camp,True,Taka,Honoka,F_SP118,48,34,480,21600,7716,ff 09 ff ff,ff ff ff ff,31 29 2a ff ff 00,1,0,805
+"TP 100% Saves - NTSC-U 6.17.20/10 - Desert, Camp, AG1.gci",GZ2E01,2,Arbiter's Grounds 1,True,Taka,Honoka,D_MN10,49,36,480,21600,7716,01 09 ff ff,ff ff ff ff,31 29 2a ff ff 00,1,1,545
+"TP 100% Saves - NTSC-U 6.17.20/11 - AG2, Post AG, Gorge Arc.gci",GZ2E01,0,Arbiter's Grounds 2,True,Taka,Honoka,D_MN10,51,39,485,21600,6361,02 09 b2 ff,ff ff ff ff,31 29 2a b2 ff 00,1,0,786
+"TP 100% Saves - NTSC-U 6.17.20/11 - AG2, Post AG, Gorge Arc.gci",GZ2E01,1,Post Arbiter's Grounds,True,Taka,Honoka,F_SP125,56,44,485,21600,6361,02 09 b2 ff,ff ff ff ff,31 29 2a b2 ff 00,1,0,835
+"TP 100% Saves - NTSC-U 6.17.20/11 - AG2, Post AG, Gorge Arc.gci",GZ2E01,2,Gorge Arc,True,Taka,Honoka,F_SP121,56,44,485,21600,6361,00 ff b2 ff,ff ff ff ff,31 29 2a b2 ff 00,1,1,577
+"TP 100% Saves - NTSC-U 6.17.20/12 - SPR1, SPR2, Bomb Boost.gci",GZ2E01,0,Snowpeak Ruins 1,True,Taka,Honoka,D_MN11,58,44,501,21600,6361,00 09 b2 ff,ff ff ff ff,31 29 2a b2 ff 00,1,0,806
+"TP 100% Saves - NTSC-U 6.17.20/12 - SPR1, SPR2, Bomb Boost.gci",GZ2E01,1,Snowpeak Ruins 2,True,Taka,Honoka,D_MN11,59,38,501,21600,6361,00 06 b2 ff,ff ff ff ff,31 29 2a b2 ff 00,1,0,863
+"TP 100% Saves - NTSC-U 6.17.20/12 - SPR1, SPR2, Bomb Boost.gci",GZ2E01,2,North Faron Bomb Boost,True,Taka,Honoka,F_SP108,65,52,600,21600,6361,00 11 b2 ff,ff ff ff ff,31 29 2a b2 ff 00,1,0,610
+"TP 100% Saves - NTSC-U 6.17.20/13 - ToT1, ToT2, Post ToT.gci",GZ2E01,0,Temple of Time,True,Taka,Honoka,D_MN06,65,44,600,21600,5793,01 04 b2 ff,ff ff ff ff,31 29 2a b2 ff 00,1,0,830
+"TP 100% Saves - NTSC-U 6.17.20/13 - ToT1, ToT2, Post ToT.gci",GZ2E01,1,Temple of Time 2,True,Taka,Honoka,D_MN06,67,48,600,21600,5153,10 08 b2 ff,04 ff ff ff,31 29 2a b2 ff 00,1,0,888
+"TP 100% Saves - NTSC-U 6.17.20/13 - ToT1, ToT2, Post ToT.gci",GZ2E01,2,Post Temple of Time,True,Taka,Honoka,F_SP117,72,56,600,21600,5153,10 08 b2 ff,04 ff ff ff,31 29 2a b2 ff 00,1,0,629
+"TP 100% Saves - NTSC-U 6.17.20/14 - Snowboarding, Hotspring, Bell Rupee.gci",GZ2E01,0,Snowboard Races,True,Taka,Honoka,F_SP114,76,60,0,21600,5153,00 0f b2 ff,ff ff ff ff,31 29 2a b2 ff 00,1,0,852
+"TP 100% Saves - NTSC-U 6.17.20/14 - Snowboarding, Hotspring, Bell Rupee.gci",GZ2E01,1,Hotspring Minigame,True,Taka,Honoka,F_SP109,77,60,0,21600,5153,00 ff b5 ff,ff ff ff ff,31 29 2a b5 ff 00,1,0,902
+"TP 100% Saves - NTSC-U 6.17.20/14 - Snowboarding, Hotspring, Bell Rupee.gci",GZ2E01,2,Silver Rupee,True,Taka,Honoka,F_SP109,78,60,136,21600,5153,00 10 b5 ff,ff 04 ff ff,31 29 2a b5 ff 00,1,0,644
+"TP 100% Saves - NTSC-U 6.17.20/15 - Ice Puzzle, HV1, City 1.gci",GZ2E01,0,Ice Puzzle,True,Taka,Honoka,D_SB00,80,62,570,21600,5153,06 00 b5 ff,ff ff ff ff,31 29 2a b5 ff 00,1,0,870
+"TP 100% Saves - NTSC-U 6.17.20/15 - Ice Puzzle, HV1, City 1.gci",GZ2E01,1,Hidden Village 1,True,Taka,Honoka,F_SP128,82,64,600,21600,5153,08 04 b5 ff,ff ff ff ff,31 29 2a b5 ff 00,1,0,922
+"TP 100% Saves - NTSC-U 6.17.20/15 - Ice Puzzle, HV1, City 1.gci",GZ2E01,2,City in the Sky 1,True,Taka,Honoka,D_MN07,82,64,0,21600,5153,00 09 b5 ff,ff ff ff ff,31 29 2a b5 ff 00,1,0,658
+"TP 100% Saves - NTSC-U 6.17.20/16 - Aeralfos, City2, Argorok.gci",GZ2E01,0,Aeralfos Skip,True,Taka,Honoka,D_MN07B,82,64,0,21600,5153,03 09 b5 ff,ff ff ff ff,31 29 2a b5 ff 00,1,0,892
+"TP 100% Saves - NTSC-U 6.17.20/16 - Aeralfos, City2, Argorok.gci",GZ2E01,1,City in the Sky 2,True,Taka,Honoka,D_MN07,82,64,0,21600,5153,00 0a b5 ff,ff ff ff ff,31 29 2a b5 ff 00,1,0,935
+"TP 100% Saves - NTSC-U 6.17.20/16 - Aeralfos, City2, Argorok.gci",GZ2E01,2,Argorok,True,Taka,Honoka,D_MN07A,84,64,0,21600,5153,03 0a b5 ff,ff ff ff ff,31 29 2a b5 ff 00,1,0,677
+"TP 100% Saves - NTSC-U 6.17.20/17 - Post City, Palace1, Palace2.gci",GZ2E01,0,Post City,True,Taka,Honoka,F_SP115,89,68,0,21600,5153,03 0a b5 ff,ff ff ff ff,31 29 2a b5 ff 00,1,0,896
+"TP 100% Saves - NTSC-U 6.17.20/17 - Post City, Palace1, Palace2.gci",GZ2E01,1,Palace of Twilight 1,True,Taka,Honoka,D_MN08,90,72,2,21600,5153,00 0a b5 ff,ff ff ff ff,31 29 2a b5 ff 00,2,1,940
+"TP 100% Saves - NTSC-U 6.17.20/17 - Post City, Palace1, Palace2.gci",GZ2E01,2,Palace of Twilight 2,True,Taka,Honoka,D_MN08,92,72,2,21600,5153,00 0a b5 ff,ff ff ff ff,31 49 2a b5 ff 00,2,0,690
+"TP 100% Saves - NTSC-U 6.17.20/18 - Zant, CoO, Post CoO.gci",GZ2E01,0,Zant fight,True,Taka,Honoka,D_MN08A,92,72,2,21600,5153,00 0a b5 ff,ff ff ff ff,31 49 2a b5 ff 00,2,0,915
+"TP 100% Saves - NTSC-U 6.17.20/18 - Zant, CoO, Post CoO.gci",GZ2E01,1,Cave of Ordeals,True,Taka,Honoka,D_SB01,97,76,2,21600,5153,10 0a b5 ff,04 ff ff ff,2f 49 2c b5 ff 00,2,1,966
+"TP 100% Saves - NTSC-U 6.17.20/18 - Zant, CoO, Post CoO.gci",GZ2E01,2,Post Cave of Ordeals,True,Taka,Honoka,F_SP124,97,70,908,21600,5153,10 0a b5 ff,04 ff ff ff,2f 49 2c b5 ff 00,2,1,711
+"TP 100% Saves - NTSC-U 6.17.20/18b - CoO10, CoO20, CoO30.gci",GZ2E01,0,Zant fight,True,Taka,Honoka,D_SB01,97,76,2,21600,5153,10 0a b5 ff,04 ff ff ff,2f 49 2c b5 ff 00,2,0,921
+"TP 100% Saves - NTSC-U 6.17.20/18b - CoO10, CoO20, CoO30.gci",GZ2E01,1,Cave of Ordeals,True,Taka,Honoka,D_SB01,97,76,2,21600,5153,06 0d b5 ff,ff ff ff ff,2f 49 2c b5 ff 00,2,0,966
+"TP 100% Saves - NTSC-U 6.17.20/18b - CoO10, CoO20, CoO30.gci",GZ2E01,2,Post Cave of Ordeals,True,Taka,Honoka,D_SB01,97,76,2,21600,5153,10 0a b5 ff,04 ff ff ff,2f 49 2c b5 ff 00,2,0,703
+"TP 100% Saves - NTSC-U 6.17.20/19 - Cats, Hyrule, Beast Ganon.gci",GZ2E01,0,Cats,True,Taka,Honoka,F_SP128,98,76,908,21600,5153,02 06 b5 ff,ff ff ff ff,2f 49 2c b5 ff 00,2,1,937
+"TP 100% Saves - NTSC-U 6.17.20/19 - Cats, Hyrule, Beast Ganon.gci",GZ2E01,1,Hyrule Castle,True,Taka,Honoka,D_MN09,100,80,8,21600,5153,00 0a b5 ff,ff ff ff ff,2f 49 2c b5 ff 00,2,0,981
+"TP 100% Saves - NTSC-U 6.17.20/19 - Cats, Hyrule, Beast Ganon.gci",GZ2E01,2,Puppet Zelda,True,Taka,Honoka,D_MN09A,100,80,23,21600,3235,0d 04 b5 ff,ff ff ff ff,2f 49 2c b5 ff 00,2,0,733

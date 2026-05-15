@@ -1,0 +1,55 @@
+start,end,size,confidence,kind,name,note,sample
+0x0000,0x0001,0x2,observed,bytes,hd.header_or_slot_flags,Not present in GC status_a; 0x0001 in every current valid sample,00 01
+0x0002,0x0003,0x2,observed,u16be,player.status_a.max_life,Sample value 0x0017,00 17
+0x0004,0x0005,0x2,observed,u16be,player.status_a.life,Sample value 0x000c,00 0c
+0x0006,0x0007,0x2,observed,u16be,player.status_a.rupees,Sample value 0x012b,01 2b
+0x0008,0x0009,0x2,observed,u16be,player.status_a.max_oil,0x5460 in every current valid sample,54 60
+0x000a,0x000b,0x2,observed,u16be,player.status_a.oil,Varies plausibly as lantern oil,42 e9
+0x000c,0x000c,0x1,observed,u8,player.status_a.unknown10,Zero in every current valid sample; shifted equivalent of GC status_a unk10,00
+0x000d,0x0010,0x4,observed,bytes,player.status_a.select_items,Shifted +2 from GC layout; 4 current item slots,01 0c 00 ff
+0x0011,0x0014,0x4,observed,bytes,player.status_a.mix_items,Shifted +2 from GC layout,ff ff ff ff
+0x0015,0x001a,0x6,observed,bytes,player.status_a.equipment,Shifted +2 from GC layout,2f 28 2a b4 ff 00
+0x001b,0x001b,0x1,observed,u8,player.status_a.wallet_size,Values 0..3 across current samples,00
+0x001c,0x001f,0x4,observed,bytes,player.status_a.magic,Shifted +2 from GC layout; all zero in current samples,00 00 00 00
+0x0020,0x0020,0x1,observed,u8,player.status_a.transform_status,Sample has 1 for wolf/current transform; most saves 0,01
+0x0021,0x0027,0x7,sample_zero,bytes,player.status_a.trailing_padding,Zero in current samples,00 00 00 00 00 00 00
+0x0028,0x003f,0x18,observed,struct,player.status_b,,00 b4 b2 a9 e2 5a 5c b0 03 01 00 00 00 00 00 00 ... nonzero=10/24
+0x0040,0x0057,0x18,observed,struct,player.horse_place,,41 af 63 41 c6 1c 40 00 c2 38 5d 40 00 00 46 5f ... nonzero=19/24
+0x0058,0x0063,0xc,observed,struct,player.return_place,,46 5f 53 50 31 32 31 00 06 03 15 00
+0x0064,0x007f,0x1c,observed,struct,player.field_last_stay,,c7 0e 30 00 43 96 00 00 c6 7f 78 00 c0 00 46 5f ... nonzero=20/28
+0x0080,0x009b,0x1c,observed,struct,player.last_mark,,00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ... nonzero=2/28
+0x009c,0x00cb,0x30,observed,struct,player.items,,40 48 ff ff ff ff ff ff ff ff ff 6c 61 ff ff ff ... nonzero=47/48
+0x00cc,0x00eb,0x20,observed,u32be[8],player.get_item_flags,,00 0c 00 1f 80 00 85 7f 00 00 0d 01 00 00 00 20 ... nonzero=14/32
+0x00ec,0x00f7,0xc,observed,struct,player.item_record,,00 00 00 00 00 00 00 00 32 00 00 00
+0x00f8,0x00ff,0x8,observed,bytes,player.item_max,,1e 1e 0f 1e 1e 1e 0a 00
+0x0100,0x010f,0x10,observed,struct,player.collect,,01 05 01 00 00 00 00 00 00 01 00 ff 00 80 00 00
+0x0110,0x0113,0x4,observed,struct,player.wolf,,00 00 00 00
+0x0114,0x011b,0x8,observed,struct,player.light_drop,,0c 00 00 00 01 00 00 00
+0x011c,0x016b,0x50,observed,struct,player.letter_info,,00 00 00 08 00 00 00 00 00 00 00 08 00 00 00 00 ... nonzero=3/80
+0x016c,0x019f,0x34,observed,struct,player.fishing_info,,00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 ... nonzero=2/52
+0x01a0,0x01a7,0x8,sample_zero,bytes,player.info.unknown0_or_padding,Zero in current sample; GC has unknown0 here,00 00 00 00 00 00 00 00
+0x01a8,0x01af,0x8,observed,s64be,player.info.total_time,,00 00 00 c1 78 2c 83 46
+0x01b0,0x01b1,0x2,sample_zero,bytes,player.info.unknown1_or_padding,Zero in current sample,00 00
+0x01b2,0x01b3,0x2,observed,u16be,player.info.death_count,,00 01
+0x01b4,0x01c3,0x10,observed,cstring,player.info.player_name,TPHD uses some following padding bytes for extra state,Link
+0x01c4,0x01c4,0x1,sample_zero,bytes,player.info.after_player_name,Zero in current sample,00
+0x01c5,0x01d4,0x10,observed,cstring,player.info.horse_name,TPHD uses some following padding bytes for extra state,Epona
+0x01d5,0x01d5,0x1,sample_zero,bytes,player.info.after_horse_name,Zero in current sample,00
+0x01d6,0x01d6,0x1,observed,u8,player.info.clear_count,,00
+0x01d7,0x01df,0x9,sample_zero,bytes,player.info.extra_or_padding,Zero in current sample,00 00 00 00 00 00 00 00 00
+0x01e0,0x01ef,0x10,observed_constant,bytes,player.config_or_hd_options,Same 16 bytes in all current samples; not byte-compatible with GC config,00 00 00 01 00 03 01 5e 00 00 08 01 10 14 53 48
+0x01f0,0x05ef,0x400,structural,dSv_memory_c[32],stage_memory,Same size/position as GC; per-stage flag bits still need validation,80 14 60 9f 08 ff f6 00 00 00 00 00 58 81 00 01 ... nonzero=143/1024
+0x05f0,0x07ef,0x200,structural,dSv_memory2_c[64],visited_room_memory,Same size/position as GC; visited-room bit semantics still need validation,00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ... nonzero=19/512
+0x07f0,0x08ef,0x100,structural,bytes,event_flags,Same size/position as GC; event labels still need bit-level validation,00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ... nonzero=2/256
+0x08f0,0x08f7,0x8,observed,cstring,hd.current_stage_name,Not present in GC reserve,F_SP121
+0x08f8,0x090f,0x18,observed,bytes,hd.current_position_or_restart,Contains float-looking coordinates and packed room/spawn/layer bytes; needs controlled save validation,c5 fd 4e 0d 47 5f cb ba 00 03 ff 00 00 06 0e 00 ... nonzero=12/24
+0x0910,0x093d,0x2e,sample_zero,bytes,hd.current_stage_padding,Zero in current sample,00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ... nonzero=0/46
+0x093e,0x093f,0x2,observed,bytes,hd.current_stage_flags_or_mode,Nonzero in current sample; meaning unknown,20 01
+0x0940,0x0957,0x18,observed,struct,minigame_records,,00 00 00 00 00 01 d4 c0 00 00 00 00 00 00 00 00 ... nonzero=3/24
+0x0958,0x0a93,0x13c,observed,zero_padding,post_save_padding,Sample is zero; GC quest-log body has unused space after dSv_save_c,00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ... nonzero=0/316
+0x0a94,0x0a98,0x5,sample_zero,bytes,hd_tail.zero_prefix,Zero in current samples; no GC destination,00 00 00 00 00
+0x0a99,0x0aa4,0xc,hd_only,bytes,hd_tail.late_game_block,Nonzero only in late-game Palace/Hyrule samples; no confirmed GC destination,00 00 00 00 00 00 00 00 00 00 00 00
+0x0aa5,0x0ab7,0x13,sample_zero,bytes,hd_tail.zero_mid,Zero in current samples; no GC destination,00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ... nonzero=0/19
+0x0ab8,0x0ab8,0x1,observed_constant,u8,hd_tail.common_flag,0x01 in every current valid sample,01
+0x0ab9,0x0abb,0x3,hd_only,bytes,hd_tail.late_game_flags,Late-game flags; no confirmed GC destination,00 00 00
+0x0abc,0x0df7,0x33c,sample_zero,bytes,hd_tail.zero_suffix,Zero in current samples; no GC destination,00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ... nonzero=0/828

@@ -1,0 +1,154 @@
+TPHD checksum ok: True calc=0000a426/ffff4de2 stored=0000a426/ffff4de2
+GC slot 0 checksum ok: True calc=00007b8a/ffff79ea stored=00007b8a/ffff79ea
+
+TPHD Observed Fields
+0000..0001 0002 observed   hd.header_or_slot_flags                00 01
+0002..0003 0002 observed   player.status_a.max_life               0x17
+0004..0005 0002 observed   player.status_a.life                   0xc
+0006..0007 0002 observed   player.status_a.rupees                 0x12b
+0008..0009 0002 observed   player.status_a.max_oil                0x5460
+000a..000b 0002 observed   player.status_a.oil                    0x42e9
+000c..000c 0001 observed   player.status_a.unknown10              0x0
+000d..0010 0004 observed   player.status_a.select_items           01 0c 00 ff
+0011..0014 0004 observed   player.status_a.mix_items              ff ff ff ff
+0015..001a 0006 observed   player.status_a.equipment              2f 28 2a b4 ff 00
+001b..001b 0001 observed   player.status_a.wallet_size            0x0
+001c..001f 0004 observed   player.status_a.magic                  00 00 00 00
+0020..0020 0001 observed   player.status_a.transform_status       0x1
+0021..0027 0007 sample_zero player.status_a.trailing_padding       00 00 00 00 00 00 00
+0028..003f 0018 observed   player.status_b                        00 b4 b2 a9 e2 5a 5c b0 03 01 00 00 00 00 00 00 ...
+0040..0057 0018 observed   player.horse_place                     41 af 63 41 c6 1c 40 00 c2 38 5d 40 00 00 46 5f ...
+0058..0063 000c observed   player.return_place                    46 5f 53 50 31 32 31 00 06 03 15 00
+0064..007f 001c observed   player.field_last_stay                 c7 0e 30 00 43 96 00 00 c6 7f 78 00 c0 00 46 5f ...
+0080..009b 001c observed   player.last_mark                       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+009c..00cb 0030 observed   player.items                           40 48 ff ff ff ff ff ff ff ff ff 6c 61 ff ff ff ...
+00cc..00eb 0020 observed   player.get_item_flags                  00 0c 00 1f 80 00 85 7f 00 00 0d 01 00 00 00 20 ...
+00ec..00f7 000c observed   player.item_record                     00 00 00 00 00 00 00 00 32 00 00 00
+00f8..00ff 0008 observed   player.item_max                        1e 1e 0f 1e 1e 1e 0a 00
+0100..010f 0010 observed   player.collect                         01 05 01 00 00 00 00 00 00 01 00 ff 00 80 00 00
+0110..0113 0004 observed   player.wolf                            00 00 00 00
+0114..011b 0008 observed   player.light_drop                      0c 00 00 00 01 00 00 00
+011c..016b 0050 observed   player.letter_info                     00 00 00 08 00 00 00 00 00 00 00 08 00 00 00 00 ...
+016c..019f 0034 observed   player.fishing_info                    00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 ...
+01a0..01a7 0008 sample_zero player.info.unknown0_or_padding        00 00 00 00 00 00 00 00
+01a8..01af 0008 observed   player.info.total_time                 00 00 00 c1 78 2c 83 46
+01b0..01b1 0002 sample_zero player.info.unknown1_or_padding        00 00
+01b2..01b3 0002 observed   player.info.death_count                0x1
+01b4..01c3 0010 observed   player.info.player_name                'Link'
+01c4..01c4 0001 sample_zero player.info.after_player_name          00
+01c5..01d4 0010 observed   player.info.horse_name                 'Epona'
+01d5..01d5 0001 sample_zero player.info.after_horse_name           00
+01d6..01d6 0001 observed   player.info.clear_count                0x0
+01d7..01df 0009 sample_zero player.info.extra_or_padding           00 00 00 00 00 00 00 00 00
+01e0..01ef 0010 observed_constant player.config_or_hd_options            00 00 00 01 00 03 01 5e 00 00 08 01 10 14 53 48
+01f0..05ef 0400 structural stage_memory                           80 14 60 9f 08 ff f6 00 00 00 00 00 58 81 00 01 ...
+05f0..07ef 0200 structural visited_room_memory                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+07f0..08ef 0100 structural event_flags                            00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+08f0..08f7 0008 observed   hd.current_stage_name                  'F_SP121'
+08f8..090f 0018 observed   hd.current_position_or_restart         c5 fd 4e 0d 47 5f cb ba 00 03 ff 00 00 06 0e 00 ...
+0910..093d 002e sample_zero hd.current_stage_padding               00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+093e..093f 0002 observed   hd.current_stage_flags_or_mode         20 01
+0940..0957 0018 observed   minigame_records                       00 00 00 00 00 01 d4 c0 00 00 00 00 00 00 00 00 ...
+0958..0a93 013c observed   post_save_padding                      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+0a94..0a98 0005 sample_zero hd_tail.zero_prefix                    00 00 00 00 00
+0a99..0aa4 000c hd_only    hd_tail.late_game_block                00 00 00 00 00 00 00 00 00 00 00 00
+0aa5..0ab7 0013 sample_zero hd_tail.zero_mid                       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+0ab8..0ab8 0001 observed_constant hd_tail.common_flag                    0x1
+0ab9..0abb 0003 hd_only    hd_tail.late_game_flags                00 00 00
+0abc..0df7 033c sample_zero hd_tail.zero_suffix                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+0df8..0dff 0008 known      checksum                               00 00 a4 26 ff ff 4d e2
+
+GC Slot 0 Fields
+0000..0001 0002 known      player.status_a.max_life               0xf
+0002..0003 0002 known      player.status_a.life                   0xc
+0004..0005 0002 known      player.status_a.rupees                 0x0
+0006..0007 0002 known      player.status_a.max_oil                0x0
+0008..0009 0002 known      player.status_a.oil                    0x0
+000b..000e 0004 known      player.status_a.select_items           ff ff ff ff
+000f..0012 0004 known      player.status_a.mix_items              ff ff ff ff
+0013..0018 0006 known      player.status_a.equipment              2e ff ff ff ff 00
+0019..0019 0001 known      player.status_a.wallet_size            0x0
+001a..001d 0004 known      player.status_a.magic                  00 00 00 00
+001e..001e 0001 known      player.status_a.transform_status       0x0
+0028..003f 0018 known      player.status_b                        00 77 bb f5 15 70 4d 34 00 00 00 00 43 87 00 00 ...
+0040..0057 0018 known      player.horse_place                     c6 85 df ce 44 80 83 33 c5 88 83 47 fa 92 46 5f ...
+0058..0063 000c known      player.return_place                    46 5f 53 50 31 30 33 00 08 01 15 00
+0064..007f 001c known      player.field_last_stay                 c6 87 4e b9 c2 78 00 00 c5 9f 5f a0 ae 39 46 5f ...
+0080..009b 001c known      player.last_mark                       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+009c..00cb 0030 known      player.items                           ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ...
+00cc..00eb 0020 known      player.get_item_flags                  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+00ec..00f7 000c known      player.item_record                     00 00 00 00 00 00 00 00 00 00 00 00
+00f8..00ff 0008 known      player.item_max                        1e 1e 0f 1e 1e 1e 0a 00
+0100..010f 0010 known      player.collect                         00 00 00 00 00 00 00 00 00 00 00 ff 00 00 00 00
+0110..0113 0004 known      player.wolf                            00 00 00 00
+0114..011b 0008 known      player.light_drop                      00 00 00 00 00 00 00 00
+011c..016b 0050 known      player.letter_info                     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+016c..019f 0034 known      player.fishing_info                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+01a0..01a7 0008 known      player.info.unknown0                   00 00 00 00 00 00 00 00
+01a8..01af 0008 known      player.info.total_time                 00 00 00 00 a5 56 c8 08
+01b2..01b3 0002 known      player.info.death_count                0x0
+01b4..01c3 0010 known      player.info.player_name                'Link'
+01c5..01d4 0010 known      player.info.horse_name                 'Epona'
+01d6..01d6 0001 known      player.info.clear_count                0x0
+01e0..01eb 000c known      player.config                          01 01 00 01 00 00 01 5e 00 00 00 01
+01f0..05ef 0400 known      stage_memory                           00 00 00 00 00 00 00 00 00 00 00 08 00 00 00 00 ...
+05f0..07ef 0200 known      visited_room_memory                    00 00 00 00 00 00 00 00 00 00 00 02 00 00 00 00 ...
+07f0..08ef 0100 known      event_flags                            00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+08f0..093f 0050 known      reserve                                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+0940..0957 0018 known      minigame_records                       00 00 00 00 00 01 d4 c0 00 00 00 00 00 00 00 00 ...
+0a8c..0a93 0008 known      checksum                               00 00 7b 8a ff ff 79 ea
+
+Conversion Map
+player.status_a.max_life               gc=0x0000 src=  0x0002 size=0x002 strategy=copy     confidence=observed   sample_equal=False
+player.status_a.life                   gc=0x0002 src=  0x0004 size=0x002 strategy=copy     confidence=observed   sample_equal=True
+player.status_a.rupees                 gc=0x0004 src=  0x0006 size=0x002 strategy=copy     confidence=observed   sample_equal=False
+player.status_a.max_oil                gc=0x0006 src=  0x0008 size=0x002 strategy=copy     confidence=observed   sample_equal=False
+  note: Shifted +2 from GC status_a
+player.status_a.oil                    gc=0x0008 src=  0x000a size=0x002 strategy=copy     confidence=observed   sample_equal=False
+  note: Shifted +2 from GC status_a
+player.status_a.unknown10              gc=0x000a src=  0x000c size=0x001 strategy=copy     confidence=observed   sample_equal=True
+  note: Shifted +2 from GC status_a
+player.status_a.select_items           gc=0x000b src=  0x000d size=0x004 strategy=copy     confidence=observed   sample_equal=False
+  note: Shifted +2 from GC status_a
+player.status_a.mix_items              gc=0x000f src=  0x0011 size=0x004 strategy=copy     confidence=observed   sample_equal=True
+  note: Shifted +2 from GC status_a
+player.status_a.equipment              gc=0x0013 src=  0x0015 size=0x006 strategy=copy     confidence=observed   sample_equal=False
+  note: Shifted +2 from GC status_a
+player.status_a.wallet_size            gc=0x0019 src=  0x001b size=0x001 strategy=copy     confidence=observed   sample_equal=True
+  note: Shifted +2 from GC status_a
+player.status_a.magic                  gc=0x001a src=  0x001c size=0x004 strategy=copy     confidence=observed   sample_equal=True
+  note: Shifted +2 from GC status_a
+player.status_a.transform_status       gc=0x001e src=  0x0020 size=0x001 strategy=copy     confidence=observed   sample_equal=False
+  note: Shifted +2 from GC status_a
+player.status_b                        gc=0x0028 src=  0x0028 size=0x018 strategy=copy     confidence=observed   sample_equal=False
+player.horse_place                     gc=0x0040 src=  0x0040 size=0x018 strategy=copy     confidence=observed   sample_equal=False
+player.return_place                    gc=0x0058 src=  0x0058 size=0x00c strategy=copy     confidence=load_unsafe sample_equal=False
+  note: Direct-copy probe is visible in Dolphin but does not load; needs translation or paired location state
+player.field_last_stay                 gc=0x0064 src=  0x0064 size=0x01c strategy=copy     confidence=observed   sample_equal=False
+player.last_mark                       gc=0x0080 src=  0x0080 size=0x01c strategy=copy     confidence=observed   sample_equal=False
+player.items                           gc=0x009c src=  0x009c size=0x030 strategy=copy     confidence=observed   sample_equal=False
+player.get_item_flags                  gc=0x00cc src=  0x00cc size=0x020 strategy=copy     confidence=observed   sample_equal=False
+player.item_record                     gc=0x00ec src=  0x00ec size=0x00c strategy=copy     confidence=observed   sample_equal=False
+player.item_max                        gc=0x00f8 src=  0x00f8 size=0x008 strategy=copy     confidence=observed   sample_equal=True
+player.collect                         gc=0x0100 src=  0x0100 size=0x010 strategy=copy     confidence=observed   sample_equal=False
+player.wolf                            gc=0x0110 src=  0x0110 size=0x004 strategy=copy     confidence=observed   sample_equal=True
+player.light_drop                      gc=0x0114 src=  0x0114 size=0x008 strategy=copy     confidence=observed   sample_equal=False
+player.letter_info                     gc=0x011c src=  0x011c size=0x050 strategy=copy     confidence=observed   sample_equal=False
+player.fishing_info                    gc=0x016c src=  0x016c size=0x034 strategy=copy     confidence=observed   sample_equal=False
+player.info.total_time                 gc=0x01a8 src=  0x01a8 size=0x008 strategy=copy     confidence=observed   sample_equal=False
+player.info.death_count                gc=0x01b2 src=  0x01b2 size=0x002 strategy=copy     confidence=observed   sample_equal=False
+player.info.player_name                gc=0x01b4 src=  0x01b4 size=0x010 strategy=cstring  confidence=observed   sample_equal=False
+player.info.horse_name                 gc=0x01c5 src=  0x01c5 size=0x010 strategy=cstring  confidence=observed   sample_equal=False
+player.info.clear_count                gc=0x01d6 src=  0x01d6 size=0x001 strategy=copy     confidence=observed   sample_equal=True
+player.config                          gc=0x01e0 src=  <none> size=0x00c strategy=template confidence=unknown    sample_equal=False
+  note: HD config/options differ
+stage_memory                           gc=0x01f0 src=  0x01f0 size=0x400 strategy=copy     confidence=structural sample_equal=False
+  note: Same struct envelope as GC; requires bit-level validation
+visited_room_memory                    gc=0x05f0 src=  0x05f0 size=0x200 strategy=copy     confidence=structural sample_equal=False
+  note: Same struct envelope as GC
+event_flags                            gc=0x07f0 src=  0x07f0 size=0x100 strategy=copy     confidence=structural sample_equal=False
+  note: Requires event label compatibility check
+reserve                                gc=0x08f0 src=  <none> size=0x050 strategy=template confidence=unknown    sample_equal=False
+  note: HD contents differ
+minigame_records                       gc=0x0940 src=  0x0940 size=0x018 strategy=copy     confidence=observed   sample_equal=True
+hd_extra_tail                          gc=0x0a94 src=  0x0a94 size=0x364 strategy=drop     confidence=unknown    sample_equal=False
