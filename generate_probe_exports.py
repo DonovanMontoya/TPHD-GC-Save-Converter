@@ -49,6 +49,8 @@ ABILITY_RANGES = {
 SCENT_CHILDREN = 0xB4
 SCENT_POE = 0xB2
 EVENT_MIDNA_CHARGE_ATTACK = 0x0501
+EVENT_MIDNA_RIDING = 0x0C10
+EVENT_SHADOW_CRYSTAL = 0x0D04
 EVENT_STARTED_MDH = 0x0C01
 EVENT_POST_MDH = 0x1E08
 EVENT_CHILDREN_SCENT_CUTSCENE = 0x2240
@@ -56,12 +58,16 @@ EVENT_GAIN_SENSE = 0x4308
 SCENT_PROBES = (
     "ability_flags_sense",
     "ability_flags_midna_charge",
+    "ability_flags_midna_ride",
+    "ability_flags_midna_charge_ride",
+    "ability_flags_midna_charge_ride_shadow",
     "ability_flags_sense_and_charge",
     "ability_flags_mdh",
     "scent_children_select_slot",
     "scent_children_full",
     "scent_poe_from_gorge",
     "scent_sense_charge_children",
+    "scent_sense_midna_multi_children",
 )
 
 
@@ -291,6 +297,16 @@ def build_scent_ability_probe(hd: bytes, template: bytes, slot: int, name: str) 
         set_event_bit(body, EVENT_GAIN_SENSE)
     elif name == "ability_flags_midna_charge":
         set_event_bit(body, EVENT_MIDNA_CHARGE_ATTACK)
+    elif name == "ability_flags_midna_ride":
+        set_event_bit(body, EVENT_MIDNA_RIDING)
+    elif name == "ability_flags_midna_charge_ride":
+        set_event_bit(body, EVENT_MIDNA_CHARGE_ATTACK)
+        set_event_bit(body, EVENT_MIDNA_RIDING)
+    elif name == "ability_flags_midna_charge_ride_shadow":
+        set_event_bit(body, EVENT_MIDNA_CHARGE_ATTACK)
+        set_event_bit(body, EVENT_MIDNA_RIDING)
+        set_event_bit(body, EVENT_SHADOW_CRYSTAL)
+        body[0x030] |= 0x08
     elif name == "ability_flags_sense_and_charge":
         set_event_bit(body, EVENT_GAIN_SENSE)
         set_event_bit(body, EVENT_MIDNA_CHARGE_ATTACK)
@@ -310,6 +326,12 @@ def build_scent_ability_probe(hd: bytes, template: bytes, slot: int, name: str) 
         set_event_bit(body, EVENT_CHILDREN_SCENT_CUTSCENE)
         set_event_bit(body, EVENT_GAIN_SENSE)
         set_event_bit(body, EVENT_MIDNA_CHARGE_ATTACK)
+    elif name == "scent_sense_midna_multi_children":
+        set_scent(body, SCENT_CHILDREN, select_slot_2=True)
+        set_event_bit(body, EVENT_CHILDREN_SCENT_CUTSCENE)
+        set_event_bit(body, EVENT_GAIN_SENSE)
+        set_event_bit(body, EVENT_MIDNA_CHARGE_ATTACK)
+        set_event_bit(body, EVENT_MIDNA_RIDING)
     else:
         raise ValueError(f"unknown scent ability probe {name}")
 

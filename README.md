@@ -29,7 +29,8 @@ python3 tphd_to_gci.py CemuSave exported-balanced.gci \
   time, death count, and clear count. Most progression remains from the GC
   template.
 - `balanced`: experimental. Adds inventory, item flags, item counts, location
-  structs, collectibles, letters, fishing, and minigame records.
+  structs, collectibles, letters, fishing, minigame records, and GC-normalized
+  wolf scent/sense flags when TPHD scent state is present.
 - `progress`: experimental. Adds stage memory, visited-room memory, and event
   flags. This preserves more progress but is the highest-risk profile until
   those flags are fully validated against TPHD.
@@ -53,8 +54,9 @@ or `progress` fails, the failed profile identifies which field group needs
 deeper reverse engineering.
 
 Current status: the schema-based safe export loads in Dolphin for the provided
-sample save. The schema-based balanced and progress exports currently fail, so
-do not treat those profiles as usable converter outputs yet.
+sample save. The current balanced and progress profiles skip the unsafe
+`player.return_place` direct copy; both have a load-tested shape, but progress
+still needs semantic validation across more saves.
 
 ## Current Mapping Aids
 
@@ -128,6 +130,14 @@ Wolf ability probes are also available in `probe-exports/` with names starting
 `probe-wolf_ability_`. They start from the load-tested progress plus Any%
 `F_SP121` scene bundle and graft suspected ability-state ranges from known
 wolf/Midna GC references.
+
+Targeted GC-decomp probes with names starting `probe-ability_flags_` and
+`probe-scent_` confirmed the important pieces for the current sample. The
+converter now derives GC wolf ability state when TPHD has a known scent item:
+current scent is written to GC `status_a.equipment[3]`, the scent item-first
+bit is set, and wolf sense flag `0x4308` is set. `0x0501` enables a charge
+attack but is not sufficient for the Midna multi-target attack, so new
+`probe-ability_flags_midna_*` files isolate the remaining Midna ride gates.
 
 First tests to run:
 

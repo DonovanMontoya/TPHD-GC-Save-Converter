@@ -123,7 +123,12 @@ index 3, so current scent is GC body `0x016`, not `player.collect`. Scent grant
 code also sets the item-first bit and selected item slot 2. The GC ability
 checks use event `F_0550 = 0x4308` for wolf sense and `M_015 = 0x0501` for
 Midna's B charge attack. Targeted probes named `probe-ability_flags_*.gci` and
-`probe-scent_*.gci` exercise those bits directly.
+`probe-scent_*.gci` exercise those bits directly. Those probes have been
+reported working for scent/sense on the current sample, so the converter now
+derives this normalization in `balanced` and `progress` when TPHD has a known
+scent item at source offset `0x018`. `M_015` alone gives a charge attack but
+not the Midna multi-target attack; the next decomp-backed candidate is
+`M_067 = 0x0C10` because it gates `checkMidnaRide()`.
 
 Remaining non-GC / non-convertible TPHD ranges:
 

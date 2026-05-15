@@ -149,3 +149,20 @@ Range suffixes:
 
 Initial testing should prioritize `any_mdh` and `100_post_mdh`, because those
 are closest to the missing Midna/sense context.
+
+## Confirmed Scent/Sense Fix
+
+The targeted decomp-based probes for ability flags and scent state load and
+restore scent/sense behavior on the current sample. The important GC facts are:
+
+- current scent is `status_a.equipment[3]` at body offset `0x016`;
+- scent acquisition also needs the scent item-first bit and selected item slot
+  2;
+- wolf sense is event flag `F_0550 = 0x4308`;
+- Midna's B charge attack is event flag `M_015 = 0x0501`, but that alone is
+  not the multi-target Midna attack.
+
+The converter now applies this as derived normalization for `balanced` and
+`progress` profiles when TPHD source offset `0x018` contains a known scent item.
+The multi-target attack still needs a separate Midna ride-state translation;
+the strongest candidate is `M_067 = 0x0C10`, which gates `checkMidnaRide()`.

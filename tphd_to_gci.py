@@ -27,6 +27,16 @@ GC_TEMPLATE_CANDIDATES = (
     Path("GameCubeSave/Card A/01-GZ2E-gczelda2.gci"),
     Path("01-GZ2E-gczelda2.gci"),
 )
+GC_SENSE_EVENT = 0x4308
+GC_CHILDREN_SCENT_EVENT = 0x2240
+GC_ILIA_SCENT_EVENT = 0x2220
+SMELL_ITEMS = {
+    0xB0: "Ilia pouch scent",
+    0xB2: "Poe scent",
+    0xB3: "fish scent",
+    0xB4: "children scent",
+    0xB5: "medicine scent",
+}
 
 
 @dataclass
@@ -81,6 +91,45 @@ def copy_c_string(dst: bytearray, dst_offset: int, src: bytes, src_offset: int, 
     if end == -1:
         end = size
     dst[dst_offset : dst_offset + end] = raw[:end]
+
+
+def set_event_bit(body: bytearray, event_flag: int) -> None:
+    body[0x7F0 + (event_flag >> 8)] |= event_flag & 0xFF
+
+
+def set_item_first_bit(body: bytearray, item_id: int) -> None:
+    word_offset = 0x0CC + (item_id // 32) * 4
+    bit = item_id % 32
+    value = int.from_bytes(body[word_offset : word_offset + 4], "big")
+    value |= 1 << bit
+    body[word_offset : word_offset + 4] = value.to_bytes(4, "big")
+
+
+def normalize_wolf_abilities(body: bytearray, hd_slot: bytes, report: SlotReport, profile: str) -> None:
+    if profile not in ("balanced", "progress"):
+        return
+
+    scent_item = hd_slot[0x018]
+    if scent_item not in SMELL_ITEMS:
+        return
+
+    body[0x016] = scent_item
+    body[0x00D] = scent_item
+    set_item_first_bit(body, scent_item)
+    set_event_bit(body, GC_SENSE_EVENT)
+
+    if scent_item == 0xB0:
+        set_event_bit(body, GC_ILIA_SCENT_EVENT)
+    elif scent_item == 0xB4:
+        set_event_bit(body, GC_CHILDREN_SCENT_EVENT)
+
+    report.fields.append(
+        FieldResult(
+            "player.wolf_ability_normalization",
+            "derived",
+            f"mapped {SMELL_ITEMS[scent_item]} from HD 0x018; set GC scent equip, item-first bit, and sense flag 0x4308",
+        )
+    )
 
 
 def validate_hd_slot(data: bytes, label: str) -> None:
@@ -191,6 +240,8 @@ def build_mapped_body(hd_slot: bytes, gc_template_quest_log: bytes, hd_slot_inde
     for rule in CONVERSION_RULES:
         if conversion_rule_enabled(rule, profile):
             apply_conversion_rule(body, hd_slot, report, rule)
+
+    normalize_wolf_abilities(body, hd_slot, report, profile)
 
     report.fields.extend(
         [
