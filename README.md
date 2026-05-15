@@ -23,6 +23,19 @@ python3 tphd_to_gci.py CemuSave exported-balanced.gci \
   --template "/path/to/01-GZ2E-gczelda2.gci"
 ```
 
+If you have a paired GameCube save at the same story point, use it as a scene
+state reference:
+
+```bash
+python3 tphd_to_gci.py CemuSave exported-progress-paired.gci \
+  --profile progress \
+  --gc-state-reference "GameCubeSave/the-legend-of-zelda-twilight-princess.33971.gci" \
+  --gc-state-reference-slot 0
+```
+
+That keeps mapped TPHD stats/inventory while copying the GC return-place, stage
+memory, and event flags from the paired reference.
+
 ## Profiles
 
 - `safe`: most likely to load. Copies player/horse names, health, rupees, play
@@ -121,6 +134,9 @@ Current scene probe results:
   scent, and wolf multi-enemy attack are missing.
 - `probe-scene_progress_gc_any_fsp121_runtime_location_bundle.gci`: loads, with
   the same missing wolf abilities.
+- `probe-scene_progress_gc_any_fsp121_return_only.gci`: loads, but the state is
+  missing bridge/light/portal progression and asks for bridge repair without
+  usable warp points.
 
 New GC-reference scene probes graft coherent `F_SP121` location bundles from
 known-good GC saves: `probe-scene_progress_gc_gorge_arc_*` and
@@ -147,6 +163,58 @@ bit is set, wolf sense flag `0x4308` is set, and the tested pair
 Next useful tests are location-specific probes, starting from the known-loading
 Any% `F_SP121` location bundle and changing only one return/start/room/current
 field at a time.
+
+Generated focused probes:
+
+- `probe-scene_progress_any_fsp121_return_player_status_from_hd.gci`
+- `probe-scene_progress_any_fsp121_return_room_from_hd.gci`
+- `probe-scene_progress_any_fsp121_field_last_stay_from_hd.gci`
+- `probe-scene_progress_any_fsp121_horse_place_from_hd.gci`
+- `probe-scene_progress_any_fsp121_current_reserve_from_hd.gci`
+
+The local `tp/` decomp confirms that GC boot uses `player.return_place` to call
+`dComIfGp_setNextStage()`. Runtime `dSv_restart_c` is outside the persisted GCI
+quest-log body, so current-position restoration cannot be solved by copying an
+HD runtime block into the GC reserve area.
+
+Follow-up bridge/portal probes on the Any% return-only baseline are generated
+with names starting `probe-scene_progress_gc_any_fsp121_return_only_`. Test the
+single-flag probes first, then `gorge_bridge_flags`, then the stage-memory
+variants if warp map icons are still missing.
+
+Current short-list test result: `02-warp-mode.gci`, `03-bridge-flags.gci`, and
+`04-portal-icons.gci` all work as intended. `02-warp-mode.gci` also adds the
+transform option because it includes shadow-crystal flag `M_077 = 0x0D04`.
+`05-current-best.gci` combines the working portal-icon state with that transform
+gate as a probe only. This state is intentionally not promoted into the normal
+converter because it grants transform/warp/bridge progression not proven to be
+present in the TPHD source save.
+
+Paired GC reference result:
+`GameCubeSave/the-legend-of-zelda-twilight-princess.33971.gci` slot 0 is a
+wooden-sword-scent GC save at the same story point. The generated
+`artifacts/exports/exported-progress-paired-wood-scent.gci` matches that
+reference for return place, event gates, and relevant stage switches while
+keeping TPHD stats and inventory.
+
+Before testing a probe in Dolphin, inspect it:
+
+```bash
+python3 inspect_gci_state.py \
+  probe-exports/probe-scene_progress_gc_any_fsp121_return_only_portal_core_flags.gci \
+  --compare probe-exports/probe-scene_progress_gc_any_fsp121_return_only.gci
+```
+
+The inspector prints the return tuple, relevant event gates, and stage switch
+words. For portal work, Dolphin testing should answer only these questions:
+
+- Does the file load?
+- Does Midna/warp mode become available?
+- Do portal destination icons appear?
+- Does the game still ask for bridge repair?
+
+If the inspector shows no changed event or stage-switch gate for the question,
+do not spend time testing that probe.
 
 ## Workspace Layout
 

@@ -16,6 +16,7 @@ from tphd_to_gci import (
     GC_QUEST_LOG_BODY_SIZE,
     GC_QUEST_LOG_OFFSETS,
     GC_QUEST_LOG_SIZE,
+    build_mapped_body,
     checksum_pair,
     find_default_template,
     find_cemu_slots,
@@ -51,10 +52,18 @@ SCENT_POE = 0xB2
 EVENT_MIDNA_CHARGE_ATTACK = 0x0501
 EVENT_MIDNA_RIDING = 0x0C10
 EVENT_SHADOW_CRYSTAL = 0x0D04
+EVENT_FIRST_CASTLE_WARP = 0x0502
+EVENT_KAKARIKO_BRIDGE_RESTORED = 0x0620
+EVENT_FIRST_PORTAL_WARP = 0x0604
+EVENT_FOREST_TEMPLE_CLEAR_WARP = 0x0602
+EVENT_ELDIN_BRIDGE_DISAPPEARS = 0x0A20
+EVENT_ELDIN_BRIDGE_WARPED = 0x0F08
 EVENT_STARTED_MDH = 0x0C01
 EVENT_POST_MDH = 0x1E08
 EVENT_CHILDREN_SCENT_CUTSCENE = 0x2240
+EVENT_FIRST_PORTAL_HINT = 0x4220
 EVENT_GAIN_SENSE = 0x4308
+EVENT_KAKARIKO_BRIDGE_PORTAL_HINT = 0x0080
 SCENT_PROBES = (
     "ability_flags_sense",
     "ability_flags_midna_charge",
@@ -201,13 +210,16 @@ def reference_body(path: Path, slot: int) -> bytes:
     return data[offset : offset + GC_QUEST_LOG_BODY_SIZE]
 
 
+def progress_body_with_normalization(hd: bytes, template: bytes, slot: int) -> bytearray:
+    offset = GC_QUEST_LOG_OFFSETS[slot]
+    template_quest_log = template[offset : offset + GC_QUEST_LOG_SIZE]
+    body, _report = build_mapped_body(hd, template_quest_log, slot, slot, "progress")
+    return bytearray(body)
+
+
 def build_reference_scene_probe(hd: bytes, template: bytes, slot: int, name: str) -> bytes:
     out = bytearray(template)
-    offset = GC_QUEST_LOG_OFFSETS[slot]
-    body = bytearray(template[offset : offset + GC_QUEST_LOG_BODY_SIZE])
-
-    for rule_name in PROGRESS_RULES:
-        apply_rule(body, hd, rule_name)
+    body = progress_body_with_normalization(hd, template, slot)
 
     if name.startswith("scene_progress_gc_gorge_arc"):
         ref = reference_body(GC_GORGE_ARC_REFERENCE, GC_GORGE_ARC_SLOT)
@@ -224,6 +236,97 @@ def build_reference_scene_probe(hd: bytes, template: bytes, slot: int, name: str
         body[0x028:0x09C] = ref[0x028:0x09C]
     else:
         raise ValueError(f"unknown reference scene probe {name}")
+
+    patch_slot(out, bytes(body), slot)
+    return bytes(out)
+
+
+def build_any_fsp121_location_probe(hd: bytes, template: bytes, slot: int, name: str) -> bytes:
+    out = bytearray(template)
+    body = progress_body_with_normalization(hd, template, slot)
+
+    ref = reference_body(GC_ANY_FSP121_REFERENCE, GC_ANY_FSP121_SLOT)
+    body[0x040:0x09C] = ref[0x040:0x09C]
+
+    prefix = "scene_progress_any_fsp121_"
+    if not name.startswith(prefix):
+        raise ValueError(f"unknown Any% F_SP121 location probe {name}")
+    suffix = name[len(prefix):]
+
+    if suffix == "return_player_status_from_hd":
+        body[0x060] = hd[0x060]
+    elif suffix == "return_room_from_hd":
+        body[0x061] = hd[0x061]
+    elif suffix == "field_last_stay_from_hd":
+        body[0x064:0x080] = hd[0x064:0x080]
+    elif suffix == "horse_place_from_hd":
+        body[0x040:0x058] = hd[0x040:0x058]
+    elif suffix == "current_reserve_from_hd":
+        body[0x8F0:0x940] = hd[0x8F0:0x940]
+    else:
+        raise ValueError(f"unknown Any% F_SP121 location probe {name}")
+
+    patch_slot(out, bytes(body), slot)
+    return bytes(out)
+
+
+def build_return_only_bridge_probe(hd: bytes, template: bytes, slot: int, name: str) -> bytes:
+    out = bytearray(template)
+    body = progress_body_with_normalization(hd, template, slot)
+
+    any_ref = reference_body(GC_ANY_FSP121_REFERENCE, GC_ANY_FSP121_SLOT)
+    gorge_ref = reference_body(GC_GORGE_ARC_REFERENCE, GC_GORGE_ARC_SLOT)
+    body[0x058:0x064] = any_ref[0x058:0x064]
+
+    prefix = "scene_progress_gc_any_fsp121_return_only_"
+    if not name.startswith(prefix):
+        raise ValueError(f"unknown return-only bridge probe {name}")
+    suffix = name[len(prefix):]
+
+    if suffix == "portal_core_flags":
+        for event_flag in (
+            EVENT_FIRST_CASTLE_WARP,
+            EVENT_FIRST_PORTAL_WARP,
+            EVENT_FIRST_PORTAL_HINT,
+            EVENT_SHADOW_CRYSTAL,
+        ):
+            set_event_bit(body, event_flag)
+    elif suffix == "kakariko_bridge_restored_flag":
+        set_event_bit(body, EVENT_KAKARIKO_BRIDGE_RESTORED)
+    elif suffix == "eldin_bridge_disappears_flag":
+        set_event_bit(body, EVENT_ELDIN_BRIDGE_DISAPPEARS)
+    elif suffix == "eldin_bridge_warped_flag":
+        set_event_bit(body, EVENT_ELDIN_BRIDGE_WARPED)
+    elif suffix == "gorge_bridge_flags":
+        for event_flag in (
+            EVENT_FIRST_CASTLE_WARP,
+            EVENT_KAKARIKO_BRIDGE_RESTORED,
+            EVENT_FIRST_PORTAL_WARP,
+            EVENT_FOREST_TEMPLE_CLEAR_WARP,
+            EVENT_ELDIN_BRIDGE_DISAPPEARS,
+            EVENT_SHADOW_CRYSTAL,
+            EVENT_FIRST_PORTAL_HINT,
+            EVENT_KAKARIKO_BRIDGE_PORTAL_HINT,
+        ):
+            set_event_bit(body, event_flag)
+    elif suffix == "gorge_event_prefix":
+        body[0x7F0:0x800] = gorge_ref[0x7F0:0x800]
+        set_event_bit(body, EVENT_GAIN_SENSE)
+        set_event_bit(body, EVENT_MIDNA_CHARGE_ATTACK)
+        set_event_bit(body, EVENT_MIDNA_RIDING)
+    elif suffix == "gorge_stage_memory":
+        body[0x1F0:0x5F0] = gorge_ref[0x1F0:0x5F0]
+    elif suffix == "gorge_stage_memory_and_bridge_flags":
+        body[0x1F0:0x5F0] = gorge_ref[0x1F0:0x5F0]
+        for event_flag in (
+            EVENT_KAKARIKO_BRIDGE_RESTORED,
+            EVENT_FIRST_PORTAL_WARP,
+            EVENT_ELDIN_BRIDGE_DISAPPEARS,
+            EVENT_KAKARIKO_BRIDGE_PORTAL_HINT,
+        ):
+            set_event_bit(body, event_flag)
+    else:
+        raise ValueError(f"unknown return-only bridge probe {name}")
 
     patch_slot(out, bytes(body), slot)
     return bytes(out)
@@ -384,6 +487,37 @@ def main() -> None:
         "scene_progress_gc_any_fsp121_runtime_location_bundle",
     ):
         gci = build_reference_scene_probe(hd, template, 0, probe_name)
+        path = out_dir / f"probe-{probe_name}.gci"
+        path.write_bytes(gci)
+        if len(gci) != GC_GCI_SIZE:
+            raise RuntimeError(f"wrong GCI size for {path}")
+        print(path)
+
+    for probe_name in (
+        "scene_progress_any_fsp121_return_player_status_from_hd",
+        "scene_progress_any_fsp121_return_room_from_hd",
+        "scene_progress_any_fsp121_field_last_stay_from_hd",
+        "scene_progress_any_fsp121_horse_place_from_hd",
+        "scene_progress_any_fsp121_current_reserve_from_hd",
+    ):
+        gci = build_any_fsp121_location_probe(hd, template, 0, probe_name)
+        path = out_dir / f"probe-{probe_name}.gci"
+        path.write_bytes(gci)
+        if len(gci) != GC_GCI_SIZE:
+            raise RuntimeError(f"wrong GCI size for {path}")
+        print(path)
+
+    for probe_name in (
+        "scene_progress_gc_any_fsp121_return_only_portal_core_flags",
+        "scene_progress_gc_any_fsp121_return_only_kakariko_bridge_restored_flag",
+        "scene_progress_gc_any_fsp121_return_only_eldin_bridge_disappears_flag",
+        "scene_progress_gc_any_fsp121_return_only_eldin_bridge_warped_flag",
+        "scene_progress_gc_any_fsp121_return_only_gorge_bridge_flags",
+        "scene_progress_gc_any_fsp121_return_only_gorge_event_prefix",
+        "scene_progress_gc_any_fsp121_return_only_gorge_stage_memory",
+        "scene_progress_gc_any_fsp121_return_only_gorge_stage_memory_and_bridge_flags",
+    ):
+        gci = build_return_only_bridge_probe(hd, template, 0, probe_name)
         path = out_dir / f"probe-{probe_name}.gci"
         path.write_bytes(gci)
         if len(gci) != GC_GCI_SIZE:

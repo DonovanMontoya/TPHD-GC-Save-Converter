@@ -118,6 +118,7 @@ bundles around valid `F_SP121` return state:
   Faron/Eldin bridge location bundle.
 - `location_bundle`: copies GC `horse_place` through `last_mark`.
 - `runtime_location_bundle`: also copies GC `status_b`.
+- `return_only`: copies only the 12-byte Any% `F_SP121` return-place tuple.
 
 The latest scene probes show that a load-safe `F_SP121` return context is
 possible, but only when it is grafted from a coherent GC reference bundle. A
@@ -132,6 +133,9 @@ Current location-specific conclusions:
 - Copying the TPHD current-stage reserve block loads, but does not make
   `return_place` safe.
 - A known-good Any% GC `F_SP121` bundle loads in this converted progress state.
+- The Any% GC `F_SP121` return-only tuple loads too, but it is semantically too
+  early for the current TPHD sample: the game asks for bridge repair while warp
+  points are not unlocked.
 - The 100% `Gorge Arc` bundle does not load, even though its 12-byte
   `return_place` exactly matches the current TPHD sample.
 
@@ -191,10 +195,79 @@ The next useful location probes should start from the load-tested progress save
 with the confirmed wolf ability normalization, then use the Any% `F_SP121`
 bundle as the known-loading location baseline. Test one change at a time:
 
-1. Replace only `return_place.playerStatus`.
-2. Replace only `return_place.roomNo`.
-3. Replace only `field_last_stay`.
-4. Replace only `horse_place`.
-5. Add TPHD current-stage reserve bytes on top of the Any% location bundle.
+Generated files:
+
+1. `probe-scene_progress_any_fsp121_return_player_status_from_hd.gci`
+2. `probe-scene_progress_any_fsp121_return_room_from_hd.gci`
+3. `probe-scene_progress_any_fsp121_field_last_stay_from_hd.gci`
+4. `probe-scene_progress_any_fsp121_horse_place_from_hd.gci`
+5. `probe-scene_progress_any_fsp121_current_reserve_from_hd.gci`
 6. Search for the minimum event/stage-memory bits that make the 100% `Gorge Arc`
    tuple load.
+
+These probes now start from the converter's real `progress` body, including the
+derived wolf scent/sense/Midna normalization, before grafting the known-loading
+Any% `F_SP121` location bundle. The first two probes differ from that baseline
+by exactly one quest-log body byte, excluding checksum.
+
+Follow-up bridge/portal probes generated after the Any% `return_only` result:
+
+1. `probe-scene_progress_gc_any_fsp121_return_only_portal_core_flags.gci`
+2. `probe-scene_progress_gc_any_fsp121_return_only_kakariko_bridge_restored_flag.gci`
+3. `probe-scene_progress_gc_any_fsp121_return_only_eldin_bridge_disappears_flag.gci`
+4. `probe-scene_progress_gc_any_fsp121_return_only_eldin_bridge_warped_flag.gci`
+5. `probe-scene_progress_gc_any_fsp121_return_only_gorge_bridge_flags.gci`
+6. `probe-scene_progress_gc_any_fsp121_return_only_gorge_event_prefix.gci`
+7. `probe-scene_progress_gc_any_fsp121_return_only_gorge_stage_memory.gci`
+8. `probe-scene_progress_gc_any_fsp121_return_only_gorge_stage_memory_and_bridge_flags.gci`
+
+Decomp reason for these probes:
+
+- `dMenu_Fmap2DTop_c::isWarpAccept()` requires `M_021 = 0x0604` for normal
+  portal warp access.
+- Portal icons require stage switches through `checkDrawPortalIcon()`, so event
+  bits alone may unlock the warp mode without showing destinations.
+- Bridge-related map text checks `M_018 = 0x0620` for Kakariko bridge restored
+  and `M_092 = 0x0F08` for Eldin bridge warped.
+- Test result: `probe-scene_progress_gc_any_fsp121_return_only_portal_core_flags.gci`
+  loads and works as intended, and it also adds the transform option because it
+  includes `M_077 = 0x0D04` (`Get shadow crystal`).
+- Test result: the short-list `03-bridge-flags.gci` and `04-portal-icons.gci`
+  work as intended in the current Dolphin pass.
+- Test result: `05-current-best.gci` works as intended as a combined probe, but
+  it grants transform/bridge/warp state not proven to exist in the TPHD source.
+  It is intentionally not part of the normal converter.
+
+Use `inspect_gci_state.py` before Dolphin testing. It reports the relevant
+return tuple, event bits, and stage-switch words for a generated GCI and can
+diff those gates against reference saves. The validation loop should now be:
+decomp gate -> inspector diff -> one targeted Dolphin observation.
+
+## Paired Wooden-Sword-Scent Reference
+
+`GameCubeSave/the-legend-of-zelda-twilight-princess.33971.gci` slot 0 is a
+local GC save at the same story point as the TPHD source: it has children scent
+`0xB4`, `F_SP121` return-place `point=1 room=2`, `M_077` off, and the right
+early portal/Forest Temple event state (`M_014` and `M_022` on, but first
+portal warp and bridge repair flags off).
+
+The converter now supports an explicit `--gc-state-reference` option for this
+case. It copies only scene/progression state from the paired GC save:
+`return_place`, `stage_memory`, and `event_flags`. Mapped TPHD stats and
+inventory are still applied separately, and wolf scent/sense/Midna ability
+normalization is applied afterward.
+
+Generated output:
+
+```bash
+python3 tphd_to_gci.py CemuSave \
+  artifacts/exports/exported-progress-paired-wood-scent.gci \
+  --profile progress \
+  --gc-state-reference "GameCubeSave/the-legend-of-zelda-twilight-princess.33971.gci" \
+  --gc-state-reference-slot 0 \
+  --json-report artifacts/reports/exported-progress-paired-wood-scent-report.json
+```
+
+`inspect_gci_state.py` reports no scene/event/stage-switch differences between
+that generated output and the GC reference; only normal TPHD-mapped stats such
+as life and rupees differ.

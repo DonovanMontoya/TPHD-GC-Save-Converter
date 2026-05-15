@@ -136,6 +136,19 @@ def normalize_wolf_abilities(body: bytearray, hd_slot: bytes, report: SlotReport
     )
 
 
+def apply_gc_state_reference(body: bytearray, reference_body: bytes, report: SlotReport) -> None:
+    body[0x058:0x064] = reference_body[0x058:0x064]
+    body[0x1F0:0x5F0] = reference_body[0x1F0:0x5F0]
+    body[0x7F0:0x8F0] = reference_body[0x7F0:0x8F0]
+    report.fields.append(
+        FieldResult(
+            "scene.gc_state_reference",
+            "reference",
+            "copied return_place, stage memory, and event flags from paired GC state reference; TPHD stats/inventory remain mapped separately",
+        )
+    )
+
+
 def validate_hd_slot(data: bytes, label: str) -> None:
     if len(data) != HD_QUEST_LOG_SIZE:
         raise ValueError(f"{label} must be 0xE00 bytes, got {len(data):#x}")
@@ -227,7 +240,14 @@ def apply_conversion_rule(body: bytearray, hd_slot: bytes, report: SlotReport, r
         raise ValueError(f"Unsupported conversion strategy {rule.strategy!r}")
 
 
-def build_mapped_body(hd_slot: bytes, gc_template_quest_log: bytes, hd_slot_index: int, gc_slot: int, profile: str) -> tuple[bytes, SlotReport]:
+def build_mapped_body(
+    hd_slot: bytes,
+    gc_template_quest_log: bytes,
+    hd_slot_index: int,
+    gc_slot: int,
+    profile: str,
+    gc_state_reference_body: bytes | None = None,
+) -> tuple[bytes, SlotReport]:
     """Build a GC quest-log body using targeted TPHD fields."""
 
     body = bytearray(gc_template_quest_log[:GC_QUEST_LOG_BODY_SIZE])
@@ -244,6 +264,9 @@ def build_mapped_body(hd_slot: bytes, gc_template_quest_log: bytes, hd_slot_inde
     for rule in CONVERSION_RULES:
         if conversion_rule_enabled(rule, profile):
             apply_conversion_rule(body, hd_slot, report, rule)
+
+    if gc_state_reference_body is not None:
+        apply_gc_state_reference(body, gc_state_reference_body, report)
 
     normalize_wolf_abilities(body, hd_slot, report, profile)
 
@@ -274,10 +297,33 @@ def verify_gc_slot(gci: bytes, slot: int) -> bool:
     return checksum_pair(quest_log[:-8]) == stored_checksum_pair(quest_log)
 
 
-def convert_cemu_save(cemu_save: Path, gci_template: Path, output: Path, slots: Iterable[int] | None, profile: str) -> list[SlotReport]:
+def quest_log_body_from_gci(data: bytes, slot: int) -> bytes:
+    offset = GC_QUEST_LOG_OFFSETS[slot]
+    quest_log = data[offset : offset + GC_QUEST_LOG_SIZE]
+    if len(quest_log) != GC_QUEST_LOG_SIZE:
+        raise ValueError(f"Reference GCI slot {slot} is incomplete")
+    if checksum_pair(quest_log[:-8]) != stored_checksum_pair(quest_log):
+        raise ValueError(f"Reference GCI slot {slot} checksum is invalid")
+    return quest_log[:GC_QUEST_LOG_BODY_SIZE]
+
+
+def convert_cemu_save(
+    cemu_save: Path,
+    gci_template: Path,
+    output: Path,
+    slots: Iterable[int] | None,
+    profile: str,
+    gc_state_reference: Path | None = None,
+    gc_state_reference_slot: int = 0,
+) -> list[SlotReport]:
     template = gci_template.read_bytes()
     validate_gci_template(template)
     out = bytearray(template)
+    gc_state_reference_body = (
+        quest_log_body_from_gci(gc_state_reference.read_bytes(), gc_state_reference_slot)
+        if gc_state_reference is not None
+        else None
+    )
 
     reports: list[SlotReport] = []
     allowed_slots = set(slots) if slots is not None else None
@@ -293,7 +339,14 @@ def convert_cemu_save(cemu_save: Path, gci_template: Path, output: Path, slots: 
         validate_hd_slot(hd_slot, str(slot_path))
         template_offset = GC_QUEST_LOG_OFFSETS[hd_index]
         template_quest_log = template[template_offset : template_offset + GC_QUEST_LOG_SIZE]
-        body, report = build_mapped_body(hd_slot, template_quest_log, hd_index, hd_index, profile)
+        body, report = build_mapped_body(
+            hd_slot,
+            template_quest_log,
+            hd_index,
+            hd_index,
+            profile,
+            gc_state_reference_body,
+        )
         patch_slot(out, body, hd_index)
 
         if not verify_gc_slot(out, hd_index):
@@ -369,12 +422,32 @@ def main() -> None:
         help="Conversion depth. safe is the current load-tested default; balanced/progress preserve more state but need validation.",
     )
     parser.add_argument("--json-report", type=Path, help="Write the conversion report as JSON")
+    parser.add_argument(
+        "--gc-state-reference",
+        type=Path,
+        help="Paired GC GCI whose scene/progression state should be grafted onto the converted slot",
+    )
+    parser.add_argument(
+        "--gc-state-reference-slot",
+        type=int,
+        choices=(0, 1, 2),
+        default=0,
+        help="Slot index to read from --gc-state-reference, default: 0",
+    )
     args = parser.parse_args()
 
     if args.template is None:
         raise SystemExit("No GCI template found. Pass --template /path/to/01-GZ2E-gczelda2.gci")
 
-    reports = convert_cemu_save(args.cemu_save, args.template, args.output, args.slots, args.profile)
+    reports = convert_cemu_save(
+        args.cemu_save,
+        args.template,
+        args.output,
+        args.slots,
+        args.profile,
+        args.gc_state_reference,
+        args.gc_state_reference_slot,
+    )
     print(f"Wrote {args.output} ({GC_GCI_SIZE:#x} bytes)")
     print_report(reports)
 

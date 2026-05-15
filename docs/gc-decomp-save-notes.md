@@ -1,8 +1,8 @@
 # GC Decomp Save Notes
 
-These notes mine facts from the local GameCube decomp at
-`/Users/donovan/Documents/Github/tp`. They are reference facts for the
-converter; the decomp itself is not copied into this repository.
+These notes mine facts from the local GameCube decomp in `tp/`. They are
+reference facts for the converter; the decomp itself is local reference
+material and is ignored by git.
 
 ## Quest Log Layout
 
@@ -96,6 +96,18 @@ fields into the next-stage request:
 | `player.return_place.mPlayerStatus` | start point / player status |
 | `player.return_place.mRoomNo` | room number |
 
+The exact decomp path is:
+
+- `tp/src/d/d_com_inf_game.cpp`: `dComIfGs_gameStart()` calls
+  `dComIfGp_setNextStage(return_name, return_player_status, return_room, -1,
+  ..., i_setPoint=1, ...)`.
+- `dComIfGp_setNextStage()` normalizes layer values `>= 15` to `-1`, writes the
+  next-stage request, and when `i_setPoint` is true also writes the same point
+  to runtime `dSv_restart_c::mStartPoint`.
+- `tp/include/d/d_save.h`: `dSv_restart_c` is stored in `dSv_info_c` at offset
+  `0xDB4`, outside the persisted `dSv_save_c` quest-log body. A GCI converter
+  cannot persist this runtime restart struct directly.
+
 The GC decomp defines `player.return_place` as 12 bytes:
 
 | Relative offset | Field |
@@ -108,8 +120,8 @@ The GC decomp defines `player.return_place` as 12 bytes:
 
 GC player creation then treats non-negative start points differently from room
 restart points. A coherent location therefore depends on more than a stage name:
-the return stage, start point, room, layer/progress state, and possibly restart
-state all need to agree.
+the return stage, start point, room, layer/progress state, and scene-specific
+event/stage memory all need to agree.
 
 This matches probe results. Direct TPHD `return_place` fails to load, and
 changing only the return-stage name to `F_SP121` fully crashes. A known-good GC
