@@ -69,6 +69,7 @@ The decomp gives exact candidates for the reported missing wolf abilities:
 | Flag | Value | Meaning |
 | --- | ---: | --- |
 | `M_015` | `0x0501` | Can use Midna's B charge attack |
+| `M_067` | `0x0C10` | Midna riding / not riding |
 | `F_0250` | `0x1E08` | Midna revived / completed Midna's Desperate Hour |
 | `F_0279` | `0x2240` | Saw cutscene about scent of kids from wooden sword |
 | `F_0280` | `0x2220` | Saw cutscene about Ilia's scent from pouch |
@@ -76,8 +77,10 @@ The decomp gives exact candidates for the reported missing wolf abilities:
 
 `daAlink_c::checkWolfUseAbility()` checks `F_0550` before toggling wolf sense.
 `daAlink_c::checkMidnaChargeAttack()` checks event bit `0x0501`.
+`daAlink_c::checkWolfLockAttackChargeState()` additionally requires
+`checkMidnaRide()`, which is gated by `M_067 = 0x0C10`.
 
 The current TPHD sample has a children scent value at source offset `0x018`, but
-its copied event flag block does not set `F_0550` or `M_015`. That explains why
-a converted save can load while still missing sense and the wolf multi-enemy
-attack.
+its copied event flag block does not set `F_0550`, `M_015`, or `M_067`. That
+explains why a converted save can load while still missing sense and the wolf
+multi-enemy attack.

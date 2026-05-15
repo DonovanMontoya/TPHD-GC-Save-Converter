@@ -28,6 +28,8 @@ GC_TEMPLATE_CANDIDATES = (
     Path("01-GZ2E-gczelda2.gci"),
 )
 GC_SENSE_EVENT = 0x4308
+GC_MIDNA_CHARGE_EVENT = 0x0501
+GC_MIDNA_RIDING_EVENT = 0x0C10
 GC_CHILDREN_SCENT_EVENT = 0x2240
 GC_ILIA_SCENT_EVENT = 0x2220
 SMELL_ITEMS = {
@@ -117,6 +119,8 @@ def normalize_wolf_abilities(body: bytearray, hd_slot: bytes, report: SlotReport
     body[0x00D] = scent_item
     set_item_first_bit(body, scent_item)
     set_event_bit(body, GC_SENSE_EVENT)
+    set_event_bit(body, GC_MIDNA_CHARGE_EVENT)
+    set_event_bit(body, GC_MIDNA_RIDING_EVENT)
 
     if scent_item == 0xB0:
         set_event_bit(body, GC_ILIA_SCENT_EVENT)
@@ -127,7 +131,7 @@ def normalize_wolf_abilities(body: bytearray, hd_slot: bytes, report: SlotReport
         FieldResult(
             "player.wolf_ability_normalization",
             "derived",
-            f"mapped {SMELL_ITEMS[scent_item]} from HD 0x018; set GC scent equip, item-first bit, and sense flag 0x4308",
+            f"mapped {SMELL_ITEMS[scent_item]} from HD 0x018; set GC scent equip, item-first bit, sense flag 0x4308, Midna charge flag 0x0501, and Midna riding flag 0x0c10",
         )
     )
 

@@ -30,7 +30,7 @@ python3 tphd_to_gci.py CemuSave exported-balanced.gci \
   template.
 - `balanced`: experimental. Adds inventory, item flags, item counts, location
   structs, collectibles, letters, fishing, minigame records, and GC-normalized
-  wolf scent/sense flags when TPHD scent state is present.
+  wolf scent/sense/Midna attack flags when TPHD scent state is present.
 - `progress`: experimental. Adds stage memory, visited-room memory, and event
   flags. This preserves more progress but is the highest-risk profile until
   those flags are fully validated against TPHD.
@@ -135,9 +135,8 @@ Targeted GC-decomp probes with names starting `probe-ability_flags_` and
 `probe-scent_` confirmed the important pieces for the current sample. The
 converter now derives GC wolf ability state when TPHD has a known scent item:
 current scent is written to GC `status_a.equipment[3]`, the scent item-first
-bit is set, and wolf sense flag `0x4308` is set. `0x0501` enables a charge
-attack but is not sufficient for the Midna multi-target attack, so new
-`probe-ability_flags_midna_*` files isolate the remaining Midna ride gates.
+bit is set, wolf sense flag `0x4308` is set, and the tested pair
+`0x0501 + 0x0C10` restores the Midna multi-target attack.
 
 First tests to run:
 
