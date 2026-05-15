@@ -29,6 +29,23 @@ GC_GORGE_ARC_REFERENCE = Path("TP 100% Saves - NTSC-U 6.17.20/11 - AG2, Post AG,
 GC_GORGE_ARC_SLOT = 2
 GC_ANY_FSP121_REFERENCE = Path("Twilight Princess Any% Savefiles NTSC/4 EponaOOB-RupeeRoll-EldinVessel.gci")
 GC_ANY_FSP121_SLOT = 1
+ABILITY_REFERENCES = {
+    "any_mdh": (Path("Twilight Princess Any% Savefiles NTSC/9 MDH-MDHCastle-Desert.gci"), 0),
+    "100_lanayru_twilight": (Path("TP 100% Saves - NTSC-U 6.17.20/06 - Lakebed 2, Lanayru, Post Lanayru.gci"), 1),
+    "100_post_mdh": (Path("TP 100% Saves - NTSC-U 6.17.20/09 - Post MDH, Iza skip, Lake Cave.gci"), 0),
+    "100_gorge_arc": (GC_GORGE_ARC_REFERENCE, GC_GORGE_ARC_SLOT),
+}
+ABILITY_RANGES = {
+    "status_a": [(0x000, 0x028)],
+    "status_b": [(0x028, 0x040)],
+    "item_state": [(0x09C, 0x100)],
+    "collect_light": [(0x100, 0x11C)],
+    "event_flags": [(0x7F0, 0x8F0)],
+    "item_collect_light": [(0x09C, 0x11C)],
+    "event_collect_light": [(0x100, 0x11C), (0x7F0, 0x8F0)],
+    "ability_core": [(0x09C, 0x11C), (0x7F0, 0x8F0)],
+    "status_ability_core": [(0x000, 0x040), (0x09C, 0x11C), (0x7F0, 0x8F0)],
+}
 
 
 SAFE_RULES = {
@@ -189,6 +206,40 @@ def build_reference_scene_probe(hd: bytes, template: bytes, slot: int, name: str
     return bytes(out)
 
 
+def build_wolf_ability_probe(hd: bytes, template: bytes, slot: int, name: str) -> bytes:
+    out = bytearray(template)
+    offset = GC_QUEST_LOG_OFFSETS[slot]
+    body = bytearray(template[offset : offset + GC_QUEST_LOG_BODY_SIZE])
+
+    for rule_name in PROGRESS_RULES:
+        apply_rule(body, hd, rule_name)
+
+    scene_ref = reference_body(GC_ANY_FSP121_REFERENCE, GC_ANY_FSP121_SLOT)
+    body[0x040:0x09C] = scene_ref[0x040:0x09C]
+
+    prefix = "wolf_ability_"
+    if not name.startswith(prefix):
+        raise ValueError(f"unknown wolf ability probe {name}")
+    suffix = name[len(prefix):]
+    ref_name = next(
+        (candidate for candidate in sorted(ABILITY_REFERENCES, key=len, reverse=True) if suffix.startswith(candidate + "_")),
+        None,
+    )
+    if ref_name is None:
+        raise ValueError(f"unknown ability reference in {name}")
+    range_name = suffix[len(ref_name) + 1:]
+    if range_name not in ABILITY_RANGES:
+        raise ValueError(f"unknown ability range {range_name}")
+
+    ref_path, ref_slot = ABILITY_REFERENCES[ref_name]
+    ability_ref = reference_body(ref_path, ref_slot)
+    for start, end in ABILITY_RANGES[range_name]:
+        body[start:end] = ability_ref[start:end]
+
+    patch_slot(out, bytes(body), slot)
+    return bytes(out)
+
+
 def main() -> None:
     template_path = find_default_template()
     if template_path is None:
@@ -239,6 +290,16 @@ def main() -> None:
         if len(gci) != GC_GCI_SIZE:
             raise RuntimeError(f"wrong GCI size for {path}")
         print(path)
+
+    for ref_name in ABILITY_REFERENCES:
+        for range_name in ABILITY_RANGES:
+            probe_name = f"wolf_ability_{ref_name}_{range_name}"
+            gci = build_wolf_ability_probe(hd, template, 0, probe_name)
+            path = out_dir / f"probe-{probe_name}.gci"
+            path.write_bytes(gci)
+            if len(gci) != GC_GCI_SIZE:
+                raise RuntimeError(f"wrong GCI size for {path}")
+            print(path)
 
 
 if __name__ == "__main__":

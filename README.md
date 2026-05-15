@@ -124,6 +124,20 @@ New GC-reference scene probes graft coherent `F_SP121` location bundles from
 known-good GC saves: `probe-scene_progress_gc_gorge_arc_*` and
 `probe-scene_progress_gc_any_fsp121_*`.
 
+Wolf ability probes are also available in `probe-exports/` with names starting
+`probe-wolf_ability_`. They start from the load-tested progress plus Any%
+`F_SP121` scene bundle and graft suspected ability-state ranges from known
+wolf/Midna GC references.
+
+First tests to run:
+
+1. `probe-wolf_ability_any_mdh_ability_core.gci`
+2. `probe-wolf_ability_any_mdh_event_flags.gci`
+3. `probe-wolf_ability_any_mdh_item_collect_light.gci`
+4. `probe-wolf_ability_100_post_mdh_ability_core.gci`
+5. `probe-wolf_ability_100_post_mdh_event_flags.gci`
+6. `probe-wolf_ability_100_lanayru_twilight_ability_core.gci`
+
 ## Workspace Layout
 
 - Source save packs remain in place for local analysis, but `.gitignore` keeps

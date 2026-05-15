@@ -77,9 +77,13 @@ Current probe results:
 
 Next highest-priority scene-state files to test:
 
-1. Wolf ability focused probes: `wolf`, `collect`, `status_b`, and event/flag combinations.
-2. A reference comparison between working Any% `F_SP121` bundle and TPHD wolf ability flags.
-3. Avoid `Gorge Arc` location bundles for this source save unless more paired state is translated.
+1. `probe-wolf_ability_any_mdh_ability_core.gci`
+2. `probe-wolf_ability_any_mdh_event_flags.gci`
+3. `probe-wolf_ability_any_mdh_item_collect_light.gci`
+4. `probe-wolf_ability_100_post_mdh_ability_core.gci`
+5. `probe-wolf_ability_100_post_mdh_event_flags.gci`
+6. `probe-wolf_ability_100_lanayru_twilight_ability_core.gci`
+7. Avoid `Gorge Arc` location bundles for this source save unless more paired state is translated.
 
 ## Semantic Gaps
 
@@ -119,3 +123,29 @@ The latest scene probes show that a load-safe `F_SP121` return context is
 possible, but it does not restore wolf sense/scent or the multi-enemy wolf
 attack. Those are now separate ability/state flags rather than scene-loader
 fields.
+
+## Wolf Ability Probes
+
+The wolf ability probes all start from the load-tested progress baseline plus
+the Any% `F_SP121` location bundle that loads. They then graft specific
+ability-relevant GC byte ranges from known wolf/Midna references.
+
+Reference prefixes:
+
+- `any_mdh`: Any% `Midna's Desperate Hour`.
+- `100_lanayru_twilight`: 100% `Lanayru Twilight`.
+- `100_post_mdh`: 100% `Post Midna's Desperate Hour`.
+- `100_gorge_arc`: 100% `Gorge Arc`.
+
+Range suffixes:
+
+- `status_a`: `0x000..0x027`, including current transform/equipment basics.
+- `status_b`: `0x028..0x03F`, runtime/player status.
+- `item_state`: `0x09C..0x0FF`, item inventory/get-item/ammo state.
+- `collect_light`: `0x100..0x11B`, collect/wolf/light-drop state.
+- `event_flags`: `0x7F0..0x8EF`.
+- `ability_core`: `item_state + collect_light + event_flags`.
+- `status_ability_core`: `status_a + status_b + ability_core`.
+
+Initial testing should prioritize `any_mdh` and `100_post_mdh`, because those
+are closest to the missing Midna/sense context.

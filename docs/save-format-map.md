@@ -110,6 +110,13 @@ still miss sense/scent and the wolf multi-enemy attack. The 100% `Gorge Arc`
 bundles do not load in this converted progress state. Current read: scene
 loading and wolf ability restoration are separate mapping problems.
 
+Wolf ability probes now graft targeted GC ability ranges on top of the
+load-tested progress plus Any% `F_SP121` scene bundle. The likely candidate
+ranges are item/get-item state `0x09C..0x0FF`, collect/light-drop state
+`0x100..0x11B`, and event flags `0x7F0..0x8EF`. The tiny `player.wolf` range
+at `0x110..0x113` is zero in the current TPHD sample and in the inspected GC
+references, so it is unlikely to be the missing ability state by itself.
+
 Remaining non-GC / non-convertible TPHD ranges:
 
 | Range | Size | Current read |
