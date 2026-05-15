@@ -120,9 +120,25 @@ bundles around valid `F_SP121` return state:
 - `runtime_location_bundle`: also copies GC `status_b`.
 
 The latest scene probes show that a load-safe `F_SP121` return context is
-possible, but it does not restore wolf sense/scent or the multi-enemy wolf
-attack. Those are now separate ability/state flags rather than scene-loader
-fields.
+possible, but only when it is grafted from a coherent GC reference bundle. A
+direct TPHD location translation is still not known.
+
+Current location-specific conclusions:
+
+- GC game start uses `player.return_place.stage`, `player.return_place.playerStatus`,
+  and `player.return_place.roomNo` directly.
+- Direct TPHD `player.return_place` is unsafe.
+- Writing only the TPHD return stage `F_SP121` is worse: it fully crashes.
+- Copying the TPHD current-stage reserve block loads, but does not make
+  `return_place` safe.
+- A known-good Any% GC `F_SP121` bundle loads in this converted progress state.
+- The 100% `Gorge Arc` bundle does not load, even though its 12-byte
+  `return_place` exactly matches the current TPHD sample.
+
+That last point is the important blocker: location conversion needs a coherent
+stage/room/start/layer/progress translation. It cannot be promoted to the
+converter as direct copying of `return_place`, and it should not be inferred
+from stage name alone.
 
 ## Wolf Ability Probes
 
@@ -147,8 +163,8 @@ Range suffixes:
 - `ability_core`: `item_state + collect_light + event_flags`.
 - `status_ability_core`: `status_a + status_b + ability_core`.
 
-Initial testing should prioritize `any_mdh` and `100_post_mdh`, because those
-are closest to the missing Midna/sense context.
+The broad wolf ability graft probes are now secondary because targeted
+decomp-backed probes identified the needed scent/sense/Midna flags.
 
 ## Confirmed Wolf Ability Fix
 
@@ -168,3 +184,17 @@ The converter now applies this as derived normalization for `balanced` and
 `progress` profiles when TPHD source offset `0x018` contains a known scent item.
 `probe-ability_flags_midna_charge_ride.gci` confirms that the `0x0501 + 0x0C10`
 pair is sufficient for the Midna multi-target attack in the current sample.
+
+## Next Location Probes
+
+The next useful location probes should start from the load-tested progress save
+with the confirmed wolf ability normalization, then use the Any% `F_SP121`
+bundle as the known-loading location baseline. Test one change at a time:
+
+1. Replace only `return_place.playerStatus`.
+2. Replace only `return_place.roomNo`.
+3. Replace only `field_last_stay`.
+4. Replace only `horse_place`.
+5. Add TPHD current-stage reserve bytes on top of the Any% location bundle.
+6. Search for the minimum event/stage-memory bits that make the 100% `Gorge Arc`
+   tuple load.

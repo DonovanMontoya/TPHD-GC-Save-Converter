@@ -126,6 +126,12 @@ New GC-reference scene probes graft coherent `F_SP121` location bundles from
 known-good GC saves: `probe-scene_progress_gc_gorge_arc_*` and
 `probe-scene_progress_gc_any_fsp121_*`.
 
+Current location status: not solved. Direct TPHD `player.return_place` is
+unsafe, return-stage-only crashes, and the exact TPHD `F_SP121/0x06/0x03`
+return tuple does not work just because the tuple itself is valid. The converter
+deliberately keeps template `return_place`/reserve data until this is translated
+rather than copied.
+
 Wolf ability probes are also available in `probe-exports/` with names starting
 `probe-wolf_ability_`. They start from the load-tested progress plus Any%
 `F_SP121` scene bundle and graft suspected ability-state ranges from known
@@ -138,14 +144,9 @@ current scent is written to GC `status_a.equipment[3]`, the scent item-first
 bit is set, wolf sense flag `0x4308` is set, and the tested pair
 `0x0501 + 0x0C10` restores the Midna multi-target attack.
 
-First tests to run:
-
-1. `probe-wolf_ability_any_mdh_ability_core.gci`
-2. `probe-wolf_ability_any_mdh_event_flags.gci`
-3. `probe-wolf_ability_any_mdh_item_collect_light.gci`
-4. `probe-wolf_ability_100_post_mdh_ability_core.gci`
-5. `probe-wolf_ability_100_post_mdh_event_flags.gci`
-6. `probe-wolf_ability_100_lanayru_twilight_ability_core.gci`
+Next useful tests are location-specific probes, starting from the known-loading
+Any% `F_SP121` location bundle and changing only one return/start/room/current
+field at a time.
 
 ## Workspace Layout
 

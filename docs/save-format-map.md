@@ -110,6 +110,50 @@ still miss sense/scent and the wolf multi-enemy attack. The 100% `Gorge Arc`
 bundles do not load in this converted progress state. Current read: scene
 loading and wolf ability restoration are separate mapping problems.
 
+## Location State
+
+Current location conversion is not solved yet. The field shapes are known from
+the GC decomp, but the correct TPHD-to-GC translation is not a direct byte copy.
+
+GC game start uses `player.return_place` directly:
+
+| GC bytes | Meaning |
+| ---: | --- |
+| `0x058..0x05F` | return stage name |
+| `0x060` | player status / start point |
+| `0x061` | room number |
+| `0x062..0x063` | unknown bytes, normally `0x15 0x00` in tested field saves |
+
+For the current TPHD sample, the apparent return tuple is:
+
+| Field | Value |
+| --- | --- |
+| stage | `F_SP121` |
+| player status / start point | `0x06` |
+| room | `0x03` |
+| trailing bytes | `0x15 0x00` |
+
+That exact 12-byte return tuple exists in the 100% `Gorge Arc` GC reference,
+but grafting that reference's wider location bundle still does not load in the
+converted progress state. This means the return tuple must be compatible with
+other scene context, likely stage layer/progress/event state, not just valid on
+its own.
+
+Tested location outcomes:
+
+| Probe | Result | Meaning |
+| --- | --- | --- |
+| direct TPHD `player.return_place` | does not load | unsafe |
+| TPHD return-stage name only | full crash | stage name alone is unsafe |
+| TPHD current-stage reserve block `0x8F0..0x93F` | loads | not enough to fix spawn/current scene |
+| TPHD return stage plus current-stage reserve | full crash | current reserve does not make return-stage rewrite coherent |
+| GC Any% `F_SP121` location bundle | loads | known-good GC location can be grafted |
+| GC 100% `Gorge Arc` location bundle | does not load | exact matching return tuple is not sufficient |
+
+Current converter behavior therefore keeps `player.return_place` and GC reserve
+from the template. It preserves loader compatibility while leaving true current
+location/spawn translation as an open mapping problem.
+
 Wolf ability probes now graft targeted GC ability ranges on top of the
 load-tested progress plus Any% `F_SP121` scene bundle. The likely candidate
 ranges are item/get-item state `0x09C..0x0FF`, collect/light-drop state
@@ -172,9 +216,12 @@ The sample output is saved in `docs/sample-analysis.txt`.
 
 1. Create paired test saves where only one field changes: rupees, health, oil,
    equipped sword/shield/clothes, selected X/Y items, current stage, current
-   room, and one simple event flag.
+   room, spawn/start point, and one simple event flag.
 2. Diff those saves with `analyze_saves.py` and promote TPHD fields from
    `unknown` or `unverified` to `observed` only when the offset is stable.
-3. Validate event/stage flags against GC bit labels before enabling them in the
+3. Build narrower location probes around the known-loading Any% `F_SP121`
+   bundle: vary only return start point, only room, only field-last-stay, and
+   only current-stage reserve bytes.
+4. Validate event/stage flags against GC bit labels before enabling them in the
    default conversion profile.
-4. Keep HD-only state explicitly dropped with report entries.
+5. Keep HD-only state explicitly dropped with report entries.

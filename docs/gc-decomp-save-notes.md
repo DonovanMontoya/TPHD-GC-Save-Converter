@@ -84,3 +84,35 @@ The current TPHD sample has a children scent value at source offset `0x018`, but
 its copied event flag block does not set `F_0550`, `M_015`, or `M_067`. That
 explains why a converted save can load while still missing sense and the wolf
 multi-enemy attack.
+
+## Location / Start State
+
+GC start-up calls `dComIfGs_gameStart()`, which passes these saved return-place
+fields into the next-stage request:
+
+| Saved field | Meaning in scene request |
+| --- | --- |
+| `player.return_place.mName` | stage name |
+| `player.return_place.mPlayerStatus` | start point / player status |
+| `player.return_place.mRoomNo` | room number |
+
+The GC decomp defines `player.return_place` as 12 bytes:
+
+| Relative offset | Field |
+| ---: | --- |
+| `0x00..0x07` | stage name |
+| `0x08` | player status |
+| `0x09` | room number |
+| `0x0A` | unknown byte |
+| `0x0B` | unknown byte |
+
+GC player creation then treats non-negative start points differently from room
+restart points. A coherent location therefore depends on more than a stage name:
+the return stage, start point, room, layer/progress state, and possibly restart
+state all need to agree.
+
+This matches probe results. Direct TPHD `return_place` fails to load, and
+changing only the return-stage name to `F_SP121` fully crashes. A known-good GC
+Any% `F_SP121` location bundle can load, while a 100% `Gorge Arc` bundle with
+the exact same 12-byte return tuple as TPHD does not load in the converted
+progress state.
