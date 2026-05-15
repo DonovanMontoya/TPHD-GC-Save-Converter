@@ -117,6 +117,14 @@ ranges are item/get-item state `0x09C..0x0FF`, collect/light-drop state
 at `0x110..0x113` is zero in the current TPHD sample and in the inspected GC
 references, so it is unlikely to be the missing ability state by itself.
 
+The GC decomp narrows the missing sense/scent and multi-enemy wolf attack
+problem considerably. `dComIfGs_getCollectSmell()` reads selected equipment
+index 3, so current scent is GC body `0x016`, not `player.collect`. Scent grant
+code also sets the item-first bit and selected item slot 2. The GC ability
+checks use event `F_0550 = 0x4308` for wolf sense and `M_015 = 0x0501` for
+Midna's B charge attack. Targeted probes named `probe-ability_flags_*.gci` and
+`probe-scent_*.gci` exercise those bits directly.
+
 Remaining non-GC / non-convertible TPHD ranges:
 
 | Range | Size | Current read |

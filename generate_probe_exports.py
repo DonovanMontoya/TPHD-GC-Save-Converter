@@ -46,6 +46,23 @@ ABILITY_RANGES = {
     "ability_core": [(0x09C, 0x11C), (0x7F0, 0x8F0)],
     "status_ability_core": [(0x000, 0x040), (0x09C, 0x11C), (0x7F0, 0x8F0)],
 }
+SCENT_CHILDREN = 0xB4
+SCENT_POE = 0xB2
+EVENT_MIDNA_CHARGE_ATTACK = 0x0501
+EVENT_STARTED_MDH = 0x0C01
+EVENT_POST_MDH = 0x1E08
+EVENT_CHILDREN_SCENT_CUTSCENE = 0x2240
+EVENT_GAIN_SENSE = 0x4308
+SCENT_PROBES = (
+    "ability_flags_sense",
+    "ability_flags_midna_charge",
+    "ability_flags_sense_and_charge",
+    "ability_flags_mdh",
+    "scent_children_select_slot",
+    "scent_children_full",
+    "scent_poe_from_gorge",
+    "scent_sense_charge_children",
+)
 
 
 SAFE_RULES = {
@@ -240,6 +257,66 @@ def build_wolf_ability_probe(hd: bytes, template: bytes, slot: int, name: str) -
     return bytes(out)
 
 
+def set_event_bit(body: bytearray, event_flag: int) -> None:
+    body[0x7F0 + (event_flag >> 8)] |= event_flag & 0xFF
+
+
+def set_item_first_bit(body: bytearray, item_id: int) -> None:
+    word_offset = 0x0CC + (item_id // 32) * 4
+    bit = item_id % 32
+    value = int.from_bytes(body[word_offset : word_offset + 4], "big")
+    value |= 1 << bit
+    body[word_offset : word_offset + 4] = value.to_bytes(4, "big")
+
+
+def set_scent(body: bytearray, scent_item: int, *, select_slot_2: bool) -> None:
+    body[0x016] = scent_item
+    if select_slot_2:
+        body[0x00D] = scent_item
+    set_item_first_bit(body, scent_item)
+
+
+def build_scent_ability_probe(hd: bytes, template: bytes, slot: int, name: str) -> bytes:
+    out = bytearray(template)
+    offset = GC_QUEST_LOG_OFFSETS[slot]
+    body = bytearray(template[offset : offset + GC_QUEST_LOG_BODY_SIZE])
+
+    for rule_name in PROGRESS_RULES:
+        apply_rule(body, hd, rule_name)
+
+    scene_ref = reference_body(GC_ANY_FSP121_REFERENCE, GC_ANY_FSP121_SLOT)
+    body[0x040:0x09C] = scene_ref[0x040:0x09C]
+
+    if name == "ability_flags_sense":
+        set_event_bit(body, EVENT_GAIN_SENSE)
+    elif name == "ability_flags_midna_charge":
+        set_event_bit(body, EVENT_MIDNA_CHARGE_ATTACK)
+    elif name == "ability_flags_sense_and_charge":
+        set_event_bit(body, EVENT_GAIN_SENSE)
+        set_event_bit(body, EVENT_MIDNA_CHARGE_ATTACK)
+    elif name == "ability_flags_mdh":
+        set_event_bit(body, EVENT_STARTED_MDH)
+        set_event_bit(body, EVENT_POST_MDH)
+    elif name == "scent_children_select_slot":
+        body[0x00D] = body[0x016]
+    elif name == "scent_children_full":
+        set_scent(body, SCENT_CHILDREN, select_slot_2=True)
+        set_event_bit(body, EVENT_CHILDREN_SCENT_CUTSCENE)
+    elif name == "scent_poe_from_gorge":
+        set_scent(body, SCENT_POE, select_slot_2=True)
+        set_event_bit(body, EVENT_GAIN_SENSE)
+    elif name == "scent_sense_charge_children":
+        set_scent(body, SCENT_CHILDREN, select_slot_2=True)
+        set_event_bit(body, EVENT_CHILDREN_SCENT_CUTSCENE)
+        set_event_bit(body, EVENT_GAIN_SENSE)
+        set_event_bit(body, EVENT_MIDNA_CHARGE_ATTACK)
+    else:
+        raise ValueError(f"unknown scent ability probe {name}")
+
+    patch_slot(out, bytes(body), slot)
+    return bytes(out)
+
+
 def main() -> None:
     template_path = find_default_template()
     if template_path is None:
@@ -300,6 +377,14 @@ def main() -> None:
             if len(gci) != GC_GCI_SIZE:
                 raise RuntimeError(f"wrong GCI size for {path}")
             print(path)
+
+    for probe_name in SCENT_PROBES:
+        gci = build_scent_ability_probe(hd, template, 0, probe_name)
+        path = out_dir / f"probe-{probe_name}.gci"
+        path.write_bytes(gci)
+        if len(gci) != GC_GCI_SIZE:
+            raise RuntimeError(f"wrong GCI size for {path}")
+        print(path)
 
 
 if __name__ == "__main__":
