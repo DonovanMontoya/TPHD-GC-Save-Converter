@@ -369,8 +369,8 @@ def build_mapped_body(
             FieldResult(
                 "profile",
                 profile,
-                "safe copies only identity/basic stats; balanced adds inventory/location; "
-                "progress adds event/stage flags",
+                "safe copies only identity/basic stats; balanced adds inventory; "
+                "progress adds event/stage flags; location structs are never mapped from TPHD",
             ),
             FieldResult("hd_extra_tail", "dropped", "TPHD bytes 0xA94..0xDF7 have no GC quest-log destination"),
         ]

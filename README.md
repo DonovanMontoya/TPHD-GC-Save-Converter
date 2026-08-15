@@ -145,9 +145,11 @@ through live gameplay; exact inputs, hashes, and observations are recorded in
 - `safe`: most likely to load. Copies player/horse names, health, rupees, play
   time, death count, and clear count. Most progression remains from the GC
   template.
-- `balanced`: experimental. Adds inventory, item flags, item counts, location
-  structs, collectibles, letters, fishing, minigame records, and GC-normalized
-  wolf scent/sense/Midna attack flags when TPHD scent state is present.
+- `balanced`: experimental. Adds inventory, item flags, item counts,
+  collectibles, letters, fishing, minigame records, and GC-normalized wolf
+  scent/sense/Midna attack flags when TPHD scent state is present. It does not
+  map location structs; no profile does. To move location state, supply a
+  paired GC reference, which grafts its return place.
 - `progress`: experimental. Adds stage memory, visited-room memory, and event
   flags. This preserves more progress but is the highest-risk profile until
   those flags are fully validated against TPHD.
