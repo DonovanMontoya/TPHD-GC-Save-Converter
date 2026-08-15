@@ -11,7 +11,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from save_schema import GC_TO_TPHD_RULES, ReverseConversionRule
+from save_schema import GC_TO_TPHD_RULES, LOCATION_RULE_NAMES, ReverseConversionRule
 from tphd_to_gci import (
     HD_QUEST_LOG_SIZE,
     PROFILES,
@@ -27,6 +27,8 @@ from tphd_to_gci import (
 
 
 def reverse_rule_enabled(rule: ReverseConversionRule, profile: str) -> bool:
+    if rule.name in LOCATION_RULE_NAMES:
+        return False
     if rule.confidence in ("known", "observed"):
         return (
             profile in ("balanced", "progress")
@@ -82,9 +84,11 @@ def build_tphd_slot(
     report.fields.extend(
         [
             FieldResult(
-                "player.return_place",
+                "location_structs",
                 "template",
-                "kept from TPHD template; cross-version location translation is not validated",
+                "kept "
+                + ", ".join(sorted(LOCATION_RULE_NAMES))
+                + " from TPHD template; cross-version location translation is not validated",
             ),
             FieldResult(
                 "hd_only_state",

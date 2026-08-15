@@ -46,8 +46,9 @@ python3 gci_to_tphd.py input.gci ZTP00-template.dat ZTP00.dat \
 
 `safe` maps identity and basic status, `balanced` adds known inventory/player
 structures, and `progress` also maps the structurally compatible stage, visited
-room, and event blocks. Return-place/location remains inherited from the TPHD
-template because cross-version location grafting is not validated. Reverse
+room, and event blocks. Every location struct — return place, horse place,
+field last stay, and last mark — remains inherited from the TPHD template at all
+profiles, because cross-version location grafting is not validated. Reverse
 outputs have verified structure and checksums but still require Cemu/TPHD live
 gameplay validation; back up the original save before testing.
 

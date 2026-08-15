@@ -195,6 +195,19 @@ CONVERSION_RULES: tuple[ConversionRule, ...] = (
 )
 
 
+# Scene-location structs. Cross-version location translation has no validated
+# evidence in either direction, so the reverse converter leaves all of these
+# native to the TPHD template rather than only return_place.
+LOCATION_RULE_NAMES: frozenset[str] = frozenset(
+    {
+        "player.horse_place",
+        "player.return_place",
+        "player.field_last_stay",
+        "player.last_mark",
+    }
+)
+
+
 # Reverse mappings intentionally mirror only fields with an actual TPHD
 # destination. Template/drop rules and the load-unsafe return-place mapping are
 # retained as metadata but are not enabled by the reverse converter.

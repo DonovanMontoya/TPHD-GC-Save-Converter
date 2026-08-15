@@ -14,6 +14,7 @@ from gc_reference_matcher import (
     rank_references,
 )
 from gci_to_tphd import build_tphd_slot, convert_gci_to_tphd
+from save_schema import LOCATION_RULE_NAMES
 from tphd_to_gci import (
     GC_GCI_SIZE,
     GC_QUEST_LOG_BODY_SIZE,
@@ -252,6 +253,24 @@ class ReverseConversionTests(unittest.TestCase):
             gci_path.write_bytes(corrupt)
             with self.assertRaisesRegex(ValueError, "checksum is invalid"):
                 convert_gci_to_tphd(gci_path, template_path, output_path, 1, "safe")
+
+
+    def test_reverse_keeps_every_location_struct_from_the_hd_template(self) -> None:
+        """Cross-version location translation is unvalidated in reverse."""
+        body = bytearray(quest_log_body_from_gci(make_gci(), 0))
+        for offset, size in ((0x040, 0x18), (0x058, 0x0C), (0x064, 0x1C), (0x080, 0x1C)):
+            body[offset : offset + size] = bytes([0xC5]) * size
+        template = make_hd_slot(0x77)
+        for profile in ("safe", "balanced", "progress"):
+            converted, report = build_tphd_slot(bytes(body), template, 0, profile)
+            for offset, size in ((0x040, 0x18), (0x058, 0x0C), (0x064, 0x1C), (0x080, 0x1C)):
+                self.assertEqual(
+                    converted[offset : offset + size],
+                    template[offset : offset + size],
+                    f"{profile} overwrote HD location bytes at {offset:#x}",
+                )
+            mapped = {field.name for field in report.fields}
+            self.assertFalse(mapped & LOCATION_RULE_NAMES)
 
 
 class AutomaticReferenceTests(unittest.TestCase):
