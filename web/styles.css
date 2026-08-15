@@ -29,32 +29,47 @@ h1 { margin: 12px 0 10px; font-family: Georgia, "Times New Roman", serif; font-s
 .lede { max-width: 660px; margin: 0; color: var(--muted); font-size: 18px; }
 
 .converter { margin: 36px 0 28px; padding: 30px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 2px 8px rgb(40 45 38 / 6%); }
-.section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
-.section-head h2, .notes h2 { margin: 0; font-size: 24px; line-height: 1.2; }
+.converter h2, .notes h2 { margin: 0; font-size: 24px; line-height: 1.2; }
 .section-note { margin: 7px 0 0; color: var(--muted); font-size: 14px; }
 
-.segmented { display: flex; padding: 3px; background: #ebe8df; border-radius: 6px; }
-.segmented button { border: 0; border-radius: 4px; padding: 9px 13px; background: transparent; color: var(--muted); cursor: pointer; font: inherit; font-size: 14px; }
-.segmented button.active { background: white; color: var(--text); box-shadow: 0 1px 4px rgb(30 35 29 / 12%); }
-.segmented small { display: block; font-size: 9px; line-height: 1; text-transform: uppercase; }
+.steps { margin: 26px 0 0; padding: 0; list-style: none; }
+.step { display: flex; gap: 14px; }
+.step + .step { margin-top: 22px; }
+.step-num { flex: none; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--green); color: white; font-size: 13px; font-weight: 650; }
+.step-body { flex: 1; min-width: 0; padding-top: 2px; }
+.step-title { display: block; font-weight: 650; }
+.step-help { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.step-help code { background: #ebe8df; border-radius: 3px; padding: 1px 5px; font-size: 12px; }
 
-.file-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 28px 0 22px; }
-.file-card { min-height: 160px; padding: 18px; display: flex; flex-direction: column; background: white; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+.file-card { margin-top: 12px; padding: 14px 16px; display: flex; align-items: center; background: white; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
 .file-card:hover { border-color: var(--green); }
-.file-card[hidden] { display: none; }
 .file-card input { position: absolute; opacity: 0; pointer-events: none; }
-.file-title { font-weight: 650; }
-.file-title small { color: var(--muted); font-weight: 400; }
-.file-help { margin-top: 7px; color: var(--muted); font-size: 13px; line-height: 1.4; }
-.file-name { margin-top: auto; padding-top: 15px; color: var(--green); font-size: 13px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-name { color: var(--green); font-size: 13px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-card.compact { margin-top: 6px; padding: 9px 11px; }
 
-.options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.how-to { margin-top: 10px; font-size: 13px; }
+.how-to summary { color: var(--green); cursor: pointer; font-weight: 650; }
+.how-to p { margin: 8px 0 0; padding: 11px 13px; background: var(--warning); border: 1px solid #ded3aa; border-radius: 5px; color: #4f4a35; line-height: 1.5; }
+.step-body > [hidden] { display: none; }
+
+.outcome { margin: 26px 0 16px; padding: 13px 15px; background: #eef2ec; border: 1px solid #d3dccf; border-radius: 5px; font-size: 14px; }
+.outcome.error { background: #fbeeec; border-color: #e5c6c0; color: #a33b2d; }
+
+.advanced { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--border); }
+.advanced > summary { color: var(--muted); cursor: pointer; font-size: 14px; font-weight: 650; }
+.advanced-note { margin: 10px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.advanced[open] > summary { margin-bottom: 18px; }
+
+.options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.advanced-note + .options { margin-top: 20px; }
+.options[hidden] { display: none; }
 .options label { color: var(--muted); font-size: 13px; }
+.options small { text-transform: uppercase; font-size: 10px; }
 .options select { display: block; width: 100%; margin-top: 6px; padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: white; color: var(--text); font: inherit; }
 
-.notice { margin: 20px 0; padding: 13px 15px; background: var(--warning); border: 1px solid #ded3aa; border-radius: 5px; color: #4f4a35; font-size: 13px; }
 .convert { border: 0; border-radius: 5px; padding: 12px 18px; background: var(--green); color: white; cursor: pointer; font: inherit; font-weight: 650; }
-.convert:hover { background: var(--green-dark); }
+.convert:hover:not(:disabled) { background: var(--green-dark); }
+.convert:disabled { background: #b3bdb1; cursor: not-allowed; }
 #status { min-height: 24px; margin: 14px 0 0; font-size: 13px; }
 .success { color: var(--green); }
 .error { color: #a33b2d; }
@@ -71,10 +86,8 @@ footer a { color: var(--green); }
   main { width: min(100% - 24px, 920px); }
   header { padding-top: 34px; }
   .converter { margin-top: 24px; padding: 20px; }
-  .section-head { display: block; }
-  .segmented { margin-top: 18px; }
-  .file-grid, .options { grid-template-columns: 1fr; }
-  .file-card { min-height: 125px; }
+  .options { grid-template-columns: 1fr; }
+  .step { gap: 11px; }
   footer { display: block; }
   footer a { display: inline-block; margin-top: 6px; }
 }

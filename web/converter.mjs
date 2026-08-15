@@ -56,6 +56,43 @@ const LOCATION_RULES = new Set([
   "player.field_last_stay", "player.last_mark",
 ]);
 
+// The page derives the conversion direction from the source file itself rather
+// than asking: each direction needs exactly one HD save and one GCI, so the
+// format of the file being converted fully determines which way it goes.
+export function detectFormat(data) {
+  if (data.length === HD_SIZE) return "tphd";
+  if (data.length === GCI_SIZE && new TextDecoder("ascii").decode(data.subarray(0, 3)) === "GZ2") return "gc";
+  return null;
+}
+
+// A zeroed quest log still carries a valid checksum, so checksum validity alone
+// cannot tell a populated slot from an unused one. The player name does.
+export function gcSlotSummary(data) {
+  return [0, 1, 2].map((slot) => {
+    try {
+      const body = gcBody(data, slot);
+      let length = 0;
+      while (length < 0x10 && body[0x1B4 + length] !== 0) length += 1;
+      const name = new TextDecoder("ascii").decode(body.subarray(0x1B4, 0x1B4 + length)).trim();
+      return { slot, name, usable: name.length > 0 };
+    } catch {
+      return { slot, name: "", usable: false };
+    }
+  });
+}
+
+// Share of the GC quest-log body a profile actually writes; the rest is
+// inherited from the destination save. Derived from RULES so the copy on the
+// page cannot drift away from the mapping table.
+export function profileCoverage(profile) {
+  assertProfile(profile);
+  let mapped = 0;
+  for (const [name, , size, , , confidence] of RULES) {
+    if (!LOCATION_RULES.has(name) && enabled(name, confidence, profile)) mapped += size;
+  }
+  return mapped / GC_BODY_SIZE;
+}
+
 export function checksumPair(data) {
   let raw = 0;
   for (const value of data) raw += value;
