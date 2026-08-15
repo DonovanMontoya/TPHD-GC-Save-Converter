@@ -81,6 +81,14 @@ export function gcSlotSummary(data) {
   });
 }
 
+// Which quest log to target given a summary and the currently selected slot.
+// A usable selection is always kept, because the picker is re-rendered on every
+// option change and must not silently retarget a conversion the user aimed.
+export function chooseSlot(summary, current) {
+  if (summary[current]?.usable) return current;
+  return summary.find((entry) => entry.usable)?.slot ?? current;
+}
+
 // Share of the GC quest-log body a profile actually writes; the rest is
 // inherited from the destination save. Derived from RULES so the copy on the
 // page cannot drift away from the mapping table.

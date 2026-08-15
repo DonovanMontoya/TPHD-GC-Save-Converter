@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { checksumPair, detectFormat, gcBody, gcSlotSummary, gciToTphd, profileCoverage, tphdToGci, validateHd, GC_OFFSETS } from "../web/converter.mjs";
+import { checksumPair, chooseSlot, detectFormat, gcBody, gcSlotSummary, gciToTphd, profileCoverage, tphdToGci, validateHd, GC_OFFSETS } from "../web/converter.mjs";
 
 function writeU32(data, offset, value) { new DataView(data.buffer).setUint32(offset, value, false); }
 function hdFixture(fill = 0x71) { const data = new Uint8Array(0xE00).fill(fill); data.set([0,1],0); const pair=checksumPair(data.subarray(0,-8)); writeU32(data,0xDF8,pair[0]); writeU32(data,0xDFC,pair[1]); return data; }
@@ -87,4 +87,18 @@ test("profile coverage grows with the profile and never counts location structs"
   // player.return_place is load_unsafe and the other location rules are excluded,
   // so no profile may reach the 0x92 bytes they occupy.
   assert.ok(progress * 0xA8C < 0xA8C - 0x92);
+});
+
+test("slot choice keeps a usable selection and only moves off an unusable one", () => {
+  const summary = [
+    { slot: 0, name: "", usable: false },
+    { slot: 1, name: "LINK", usable: true },
+    { slot: 2, name: "ZELDA", usable: true },
+  ];
+  // The picker is rebuilt on every profile change; a deliberate choice of quest
+  // log 3 must survive it rather than snapping back and patching quest log 2.
+  assert.equal(chooseSlot(summary, 2), 2);
+  assert.equal(chooseSlot(summary, 1), 1);
+  assert.equal(chooseSlot(summary, 0), 1, "an empty slot falls back to the first real save");
+  assert.equal(chooseSlot([{ slot: 0, name: "", usable: false }], 0), 0, "with no usable slot the selection stands");
 });

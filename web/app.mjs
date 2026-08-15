@@ -1,4 +1,4 @@
-import { detectFormat, gcSlotSummary, gciToTphd, profileCoverage, tphdToGci } from "./converter.mjs";
+import { chooseSlot, detectFormat, gcSlotSummary, gciToTphd, profileCoverage, tphdToGci } from "./converter.mjs";
 
 const form = document.querySelector("#converter-form");
 const status = document.querySelector("#status");
@@ -11,6 +11,9 @@ const slotSelect = document.querySelector("#slot");
 
 const FORMAT_LABELS = { tphd: "Twilight Princess HD save", gc: "GameCube save" };
 const loaded = { source: null, destination: null };
+// Held rather than written straight to #status, because refresh() owns that
+// element and runs immediately after every file is read.
+const rejected = { source: null, destination: null };
 
 function percent(profile) {
   return `${Math.round(profileCoverage(profile) * 100)}%`;
@@ -36,8 +39,7 @@ function fillSlots(select, data) {
     option.textContent = entry?.usable ? `Quest Log ${entry.slot + 1} — ${entry.name}` : `Quest Log ${Number(option.value) + 1}`;
     option.disabled = Boolean(summary) && !entry.usable && select === slotSelect;
   }
-  const firstUsable = summary?.find((entry) => entry.usable);
-  if (firstUsable) select.value = String(firstUsable.slot);
+  if (summary) select.value = String(chooseSlot(summary, Number(select.value)));
 }
 
 function refresh() {
@@ -59,8 +61,11 @@ function refresh() {
   // Only the GC side has selectable quest logs, in either direction.
   fillSlots(slotSelect, direction === "forward" ? destination?.data : source?.data);
 
-  status.textContent = "";
-  status.className = "";
+  const unrecognised = rejected.source ?? rejected.destination;
+  status.className = unrecognised ? "error" : "";
+  status.textContent = unrecognised
+    ? `${unrecognised} is not a recognised save file. Expected a 0xE00-byte ZTPxx.dat or a Twilight Princess .gci.`
+    : "";
   describeProfile();
 
   if (!source) {
@@ -82,15 +87,13 @@ async function read(input, key) {
   input.closest(".file-card").querySelector(".file-name").textContent = file?.name ?? "Choose file…";
   if (!file) {
     loaded[key] = null;
+    rejected[key] = null;
     return;
   }
   const data = new Uint8Array(await file.arrayBuffer());
   const format = detectFormat(data);
   loaded[key] = format ? { data, format } : null;
-  if (!format) {
-    status.className = "error";
-    status.textContent = `${file.name} is not a recognised save file. Expected a 0xE00-byte ZTPxx.dat or a Twilight Princess .gci.`;
-  }
+  rejected[key] = format ? null : file.name;
 }
 
 sourceInput.addEventListener("change", async () => {
