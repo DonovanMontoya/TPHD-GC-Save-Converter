@@ -31,6 +31,19 @@ class ConversionRule:
     note: str = ""
 
 
+@dataclass(frozen=True)
+class ReverseConversionRule:
+    """One evidence-backed GameCube-to-TPHD field translation."""
+
+    name: str
+    hd_offset: int
+    size: int
+    gc_offset: int
+    strategy: str
+    confidence: str
+    note: str = ""
+
+
 GC_FIELDS: tuple[FieldDef, ...] = (
     FieldDef("player.status_a.max_life", 0x000, 2, "u16be", "known", "dSv_player_status_a_c.mMaxLife"),
     FieldDef("player.status_a.life", 0x002, 2, "u16be", "known", "dSv_player_status_a_c.mLife"),
@@ -179,4 +192,22 @@ CONVERSION_RULES: tuple[ConversionRule, ...] = (
     ConversionRule("reserve", 0x8F0, 0x50, None, "template", "unknown", "HD contents differ"),
     ConversionRule("minigame_records", 0x940, 0x18, 0x940, "copy", "observed"),
     ConversionRule("hd_extra_tail", 0xA94, 0x364, 0xA94, "drop", "unknown"),
+)
+
+
+# Reverse mappings intentionally mirror only fields with an actual TPHD
+# destination. Template/drop rules and the load-unsafe return-place mapping are
+# retained as metadata but are not enabled by the reverse converter.
+GC_TO_TPHD_RULES: tuple[ReverseConversionRule, ...] = tuple(
+    ReverseConversionRule(
+        rule.name,
+        rule.source_offset,
+        rule.size,
+        rule.gc_offset,
+        rule.strategy,
+        rule.confidence,
+        rule.note,
+    )
+    for rule in CONVERSION_RULES
+    if rule.source_offset is not None and rule.strategy in ("copy", "cstring")
 )
