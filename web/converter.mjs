@@ -43,11 +43,16 @@ const RULES = [
   ["minigame_records", 0x940, 0x18, 0x940, "copy", "observed"],
 ];
 
-const AUTO_OVERLAY = new Set([
-  "player.status_a.max_life", "player.status_a.life", "player.status_a.rupees",
-  "player.status_a.max_oil", "player.status_a.oil", "player.info.total_time",
-  "player.info.death_count", "player.info.player_name", "player.info.horse_name",
-  "player.info.clear_count",
+// An explicit GC reference may supply only these documented GC-native ranges:
+// return place, stage memory, and event flags. Mapped TPHD inventory/status is
+// retained, matching apply_gc_state_reference in tphd_to_gci.py.
+const REFERENCE_RANGES = [[0x058, 0x064], [0x1F0, 0x5F0], [0x7F0, 0x8F0]];
+
+// Cross-version location translation is unvalidated in the reverse direction,
+// so these stay native to the TPHD template. Mirrors LOCATION_RULE_NAMES.
+const LOCATION_RULES = new Set([
+  "player.horse_place", "player.return_place",
+  "player.field_last_stay", "player.last_mark",
 ]);
 
 export function checksumPair(data) {
@@ -133,13 +138,16 @@ export function tphdToGci(hd, template, { profile = "safe", slot = 0, reference 
   validateHd(hd);
   validateGci(template);
   const output = new Uint8Array(template);
-  const templateBody = gcBody(template, slot);
-  const body = new Uint8Array(reference ? gcBody(reference, referenceSlot) : templateBody);
+  const body = new Uint8Array(gcBody(template, slot));
   for (const rule of RULES) {
     const [name, , , , , confidence] = rule;
-    if (reference ? AUTO_OVERLAY.has(name) : enabled(name, confidence, profile)) applyRule(body, hd, rule);
+    if (enabled(name, confidence, profile)) applyRule(body, hd, rule);
   }
-  if (!reference && profile !== "safe") normalizeWolf(body, hd);
+  if (reference) {
+    const referenceBody = gcBody(reference, referenceSlot);
+    for (const [start, end] of REFERENCE_RANGES) body.set(referenceBody.subarray(start, end), start);
+  }
+  if (profile !== "safe") normalizeWolf(body, hd);
   const offset = GC_OFFSETS[slot];
   output.set(body, offset);
   const [sum, negative] = checksumPair(body);
@@ -156,7 +164,7 @@ export function gciToTphd(gci, template, { profile = "safe", slot = 0 } = {}) {
   const output = new Uint8Array(template);
   for (const rule of RULES) {
     const [name, , , , , confidence] = rule;
-    if (enabled(name, confidence, profile)) applyRule(output, body, rule, true);
+    if (!LOCATION_RULES.has(name) && enabled(name, confidence, profile)) applyRule(output, body, rule, true);
   }
   const [sum, negative] = checksumPair(output.subarray(0, HD_SIZE - 8));
   writeU32(output, HD_SIZE - 8, sum);
