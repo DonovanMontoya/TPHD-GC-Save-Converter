@@ -181,3 +181,38 @@ Final result: **30/30 converted checkpoint slots loaded their expected stage in
 Dolphin**, with no stage mismatch or loader failure. This proves loader and
 return-stage compatibility; it does not replace extended gameplay testing of
 every quest-state detail.
+
+## 2026-08-14 — Forward location-struct exclusion (re-validation PENDING)
+
+Forward conversion no longer grafts `player.horse_place`,
+`player.field_last_stay`, or `player.last_mark` from TPHD. `player.return_place`
+was already excluded, so `balanced`/`progress` previously emitted a location
+bundle assembled from two different saves. See `docs/gc-reference-findings.md`
+for the evidence review behind the change.
+
+The 2026-08-11 paired wooden-sword-scent entry above remains an accurate record
+of what was observed on that build. It is **superseded, not corrected**: the
+same command now produces different bytes, so its recorded output hash no longer
+describes current output.
+
+```text
+Superseded output SHA-256: fce289927e581c222dc0bbc64dc28e19216c5d8659300e2f5a20fb72e7293314
+Current output SHA-256:    57a8b58a29d103af65821eb6b332c9dae547c9f6373b39a0881d37e6f385f0eb
+Delta: 34 bytes — horse_place (15), field_last_stay (14), last_mark (1),
+       plus the 2 recomputed checksum words. return_place is byte-identical;
+       it is still grafted from the paired GC reference.
+Automated status: structure and both checksum words verify; the automatic
+       corpus regression (30 curated references, 30/30 unattended stage loads)
+       is byte-unaffected because it uses the coherent-scene path.
+```
+
+Outstanding observation required before this is treated as validated:
+
+- Re-run the paired wooden-sword-scent export and confirm it still loads into
+  `F_SP121`, point 1, room 2 with children scent, Sense, and Midna riding
+  present, then add a dated entry with the observed result.
+
+Not yet performed: no legally dumped game image was available in this
+environment, so no Dolphin run backs the current bytes. Per the evidence rules
+in `AGENTS.md`, this change is currently supported only by the decomp reasoning
+and the automated structural checks recorded above.

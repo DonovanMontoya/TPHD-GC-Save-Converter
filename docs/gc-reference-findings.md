@@ -271,3 +271,45 @@ python3 tphd_to_gci.py CemuSave \
 `inspect_gci_state.py` reports no scene/event/stage-switch differences between
 that generated output and the GC reference; only normal TPHD-mapped stats such
 as life and rupees differ.
+
+## Forward location-struct evidence review (2026-08-14)
+
+`player.horse_place`, `player.field_last_stay`, and `player.last_mark` were
+carried at `observed` confidence from the initial mapping commit. A review of
+the tracked evidence found no controlled paired-save diff and no focused Dolphin
+observation for any of the three in the forward direction:
+
+- `docs/save-format-map.md` defines `observed` as "named from the sample and/or
+  has a clear GC analogue" — structural plausibility, which `AGENTS.md` does not
+  treat as promotable on its own.
+- The `exported-balanced-minus-return.gci` result records only that the save
+  loads, which `AGENTS.md` discounts as loader compatibility.
+- `probe-scene_progress_any_fsp121_field_last_stay_from_hd.gci` and
+  `probe-scene_progress_any_fsp121_horse_place_from_hd.gci` were generated to
+  settle exactly this question and were never run.
+- Every Dolphin result that exercises a full corpus uses the automatic
+  coherent-scene path or the `safe` profile, neither of which applies these
+  rules, so none of those runs speak to them.
+
+The structs are also not independent. In the GC decomp, `field_last_stay`
+carries region-discovery bits set in lockstep with visited-room memory and read
+by the world map, and `last_mark` supplies the Midna warp destination and its
+accept flag. Because `player.return_place` was already excluded, `balanced` and
+`progress` emitted a bundle assembled from two saves at once. Measured on the
+pinned paired export, the output combined a TPHD `field_last_stay` of `F_SP108`
+with a GC `return_place` of `F_SP121`, and blanked the reference's `D_MN05` warp
+mark.
+
+Forward conversion now excludes the whole bundle, matching the reverse
+direction. Live re-validation is tracked in `docs/dolphin-test-log.md`.
+
+### Open question: widening the explicit reference graft
+
+`apply_gc_state_reference` still grafts only `0x058..0x064`, so an explicit
+reference supplies `return_place` while the other three come from the GC
+template — one GC save mixed with another, rather than TPHD mixed with GC.
+Widening the graft to `0x040..0x09C` would take the whole bundle from a single
+coherent reference. The only evidence today is that
+`probe-scene_progress_gc_any_fsp121_location_bundle.gci` loads, which is not
+sufficient to promote a wider graft. Settling it needs a focused Dolphin run
+comparing the widened output against the reference's own scene state.

@@ -48,7 +48,8 @@ python3 gci_to_tphd.py input.gci ZTP00-template.dat ZTP00.dat \
 structures, and `progress` also maps the structurally compatible stage, visited
 room, and event blocks. Every location struct — return place, horse place,
 field last stay, and last mark — remains inherited from the TPHD template at all
-profiles, because cross-version location grafting is not validated. Reverse
+profiles, matching the forward direction, because cross-version location
+grafting is not validated. Reverse
 outputs have verified structure and checksums but still require Cemu/TPHD live
 gameplay validation; back up the original save before testing.
 
@@ -81,6 +82,15 @@ python3 tphd_to_gci.py CemuSave exported-progress-paired.gci \
 
 That keeps mapped TPHD stats/inventory while copying the GC return-place, stage
 memory, and event flags from the paired reference.
+
+Location structs — `player.return_place`, `player.horse_place`,
+`player.field_last_stay`, and `player.last_mark` — are never taken from TPHD in
+either direction. They form one mutually consistent bundle: `field_last_stay`
+carries region-discovery bits that pair with visited-room memory, and
+`last_mark` holds the Midna warp destination. Grafting part of that bundle
+across versions while the rest comes from a different save produces a scene
+state that never existed in either, so the whole bundle stays native to the
+destination until a paired-save diff validates a translation.
 
 For a collection of GameCube saves, the converter can rank every valid quest-log
 slot and choose a same-stage reference automatically. For the included dungeon
