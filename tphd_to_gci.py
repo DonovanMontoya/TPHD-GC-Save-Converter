@@ -10,6 +10,7 @@ a known-good GameCube GCI template and overlays only mapped TPHD fields.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -38,6 +39,19 @@ SMELL_ITEMS = {
     0xB3: "fish scent",
     0xB4: "children scent",
     0xB5: "medicine scent",
+}
+PROFILES = ("safe", "balanced", "progress")
+AUTO_REFERENCE_OVERLAY_RULES = {
+    "player.status_a.max_life",
+    "player.status_a.life",
+    "player.status_a.rupees",
+    "player.status_a.max_oil",
+    "player.status_a.oil",
+    "player.info.total_time",
+    "player.info.death_count",
+    "player.info.player_name",
+    "player.info.horse_name",
+    "player.info.clear_count",
 }
 
 
@@ -136,15 +150,25 @@ def normalize_wolf_abilities(body: bytearray, hd_slot: bytes, report: SlotReport
     )
 
 
-def apply_gc_state_reference(body: bytearray, reference_body: bytes, report: SlotReport) -> None:
-    body[0x058:0x064] = reference_body[0x058:0x064]
-    body[0x1F0:0x5F0] = reference_body[0x1F0:0x5F0]
-    body[0x7F0:0x8F0] = reference_body[0x7F0:0x8F0]
+def apply_gc_state_reference(
+    body: bytearray,
+    reference_body: bytes,
+    report: SlotReport,
+    detail: str | None = None,
+    coherent_scene: bool = False,
+) -> None:
+    if coherent_scene:
+        body[:] = reference_body
+    else:
+        body[0x058:0x064] = reference_body[0x058:0x064]
+        body[0x1F0:0x5F0] = reference_body[0x1F0:0x5F0]
+        body[0x7F0:0x8F0] = reference_body[0x7F0:0x8F0]
     report.fields.append(
         FieldResult(
             "scene.gc_state_reference",
             "reference",
-            "copied return_place, stage memory, and event flags from paired GC state reference; TPHD stats/inventory remain mapped separately",
+            detail
+            or "copied return_place, stage memory, and event flags from paired GC state reference; TPHD stats/inventory remain mapped separately",
         )
     )
 
@@ -247,8 +271,19 @@ def build_mapped_body(
     gc_slot: int,
     profile: str,
     gc_state_reference_body: bytes | None = None,
+    gc_state_reference_detail: str | None = None,
+    gc_state_reference_coherent_scene: bool = False,
 ) -> tuple[bytes, SlotReport]:
     """Build a GC quest-log body using targeted TPHD fields."""
+
+    if profile not in PROFILES:
+        raise ValueError(f"Unknown conversion profile {profile!r}")
+    if len(hd_slot) != HD_QUEST_LOG_SIZE:
+        raise ValueError(f"TPHD slot must be 0x{HD_QUEST_LOG_SIZE:x} bytes")
+    if len(gc_template_quest_log) != GC_QUEST_LOG_SIZE:
+        raise ValueError(f"GC template quest log must be 0x{GC_QUEST_LOG_SIZE:x} bytes")
+    if gc_state_reference_body is not None and len(gc_state_reference_body) != GC_QUEST_LOG_BODY_SIZE:
+        raise ValueError(f"GC state reference body must be 0x{GC_QUEST_LOG_BODY_SIZE:x} bytes")
 
     body = bytearray(gc_template_quest_log[:GC_QUEST_LOG_BODY_SIZE])
     report = SlotReport(
@@ -261,20 +296,56 @@ def build_mapped_body(
         rupees=read_u16be(hd_slot, 0x06),
     )
 
-    for rule in CONVERSION_RULES:
-        if conversion_rule_enabled(rule, profile):
-            apply_conversion_rule(body, hd_slot, report, rule)
+    if gc_state_reference_body is not None and gc_state_reference_coherent_scene:
+        apply_gc_state_reference(
+            body,
+            gc_state_reference_body,
+            report,
+            gc_state_reference_detail,
+            gc_state_reference_coherent_scene,
+        )
+        for rule in CONVERSION_RULES:
+            if rule.name in AUTO_REFERENCE_OVERLAY_RULES:
+                apply_conversion_rule(body, hd_slot, report, rule)
+    else:
+        for rule in CONVERSION_RULES:
+            if conversion_rule_enabled(rule, profile):
+                apply_conversion_rule(body, hd_slot, report, rule)
 
-    if gc_state_reference_body is not None:
-        apply_gc_state_reference(body, gc_state_reference_body, report)
+        if gc_state_reference_body is not None:
+            apply_gc_state_reference(
+                body,
+                gc_state_reference_body,
+                report,
+                gc_state_reference_detail,
+                gc_state_reference_coherent_scene,
+            )
 
-    normalize_wolf_abilities(body, hd_slot, report, profile)
+    if not gc_state_reference_coherent_scene:
+        normalize_wolf_abilities(body, hd_slot, report, profile)
 
     report.fields.extend(
         [
-            FieldResult("player_config", "template", "kept from GC template; TPHD options are not byte-compatible with GC options"),
-            FieldResult("reserve", "template", "kept from GC template; TPHD stores extra stage/HD data here"),
-            FieldResult("profile", profile, "safe copies only identity/basic stats; balanced adds inventory/location; progress adds event/stage flags"),
+            FieldResult(
+                "player_config",
+                "reference" if gc_state_reference_coherent_scene else "template",
+                "kept from coherent GC reference"
+                if gc_state_reference_coherent_scene
+                else "kept from GC template; TPHD options are not byte-compatible with GC options",
+            ),
+            FieldResult(
+                "reserve",
+                "reference" if gc_state_reference_coherent_scene else "template",
+                "kept from coherent GC reference"
+                if gc_state_reference_coherent_scene
+                else "kept from GC template; TPHD stores extra stage/HD data here",
+            ),
+            FieldResult(
+                "profile",
+                profile,
+                "safe copies only identity/basic stats; balanced adds inventory/location; "
+                "progress adds event/stage flags",
+            ),
             FieldResult("hd_extra_tail", "dropped", "TPHD bytes 0xA94..0xDF7 have no GC quest-log destination"),
         ]
     )
@@ -298,6 +369,9 @@ def verify_gc_slot(gci: bytes, slot: int) -> bool:
 
 
 def quest_log_body_from_gci(data: bytes, slot: int) -> bytes:
+    if slot not in (0, 1, 2):
+        raise ValueError("Reference GCI slot must be 0, 1, or 2")
+    validate_gci_template(data)
     offset = GC_QUEST_LOG_OFFSETS[slot]
     quest_log = data[offset : offset + GC_QUEST_LOG_SIZE]
     if len(quest_log) != GC_QUEST_LOG_SIZE:
@@ -315,6 +389,9 @@ def convert_cemu_save(
     profile: str,
     gc_state_reference: Path | None = None,
     gc_state_reference_slot: int = 0,
+    auto_gc_state_reference_roots: Iterable[Path] | None = None,
+    auto_reference_min_margin: int = 50,
+    auto_reference_hints: Path | None = None,
 ) -> list[SlotReport]:
     template = gci_template.read_bytes()
     validate_gci_template(template)
@@ -324,6 +401,16 @@ def convert_cemu_save(
         if gc_state_reference is not None
         else None
     )
+    auto_references = None
+    curated_hints = {}
+    if auto_gc_state_reference_roots is not None:
+        from gc_reference_matcher import load_reference_hints, load_reference_slots
+
+        auto_references = load_reference_slots(list(auto_gc_state_reference_roots))
+        if not auto_references:
+            raise ValueError("No valid GC slots found under automatic reference roots")
+        if auto_reference_hints is not None:
+            curated_hints = load_reference_hints(auto_reference_hints)
 
     reports: list[SlotReport] = []
     allowed_slots = set(slots) if slots is not None else None
@@ -337,6 +424,67 @@ def convert_cemu_save(
 
         hd_slot = slot_path.read_bytes()
         validate_hd_slot(hd_slot, str(slot_path))
+        slot_reference_body = gc_state_reference_body
+        slot_reference_detail = None
+        slot_reference_coherent_scene = False
+        if auto_references is not None:
+            from gc_reference_matcher import confidence_margin, rank_references
+
+            hd_sha256 = hashlib.sha256(hd_slot).hexdigest()
+            hint = curated_hints.get(hd_sha256)
+            if hint is not None:
+                if hint.unsupported_reason is not None:
+                    raise ValueError(
+                        f"Curated reference manifest rejects TPHD slot {hd_index}: "
+                        f"{hint.unsupported_reason}"
+                    )
+                selected = next(
+                    (
+                        reference
+                        for reference in auto_references
+                        if reference.file_sha256 == hint.reference_sha256
+                        and reference.slot == hint.reference_slot
+                    ),
+                    None,
+                )
+                if selected is None:
+                    raise ValueError(
+                        f"Curated GC reference {hint.reference_sha256} slot {hint.reference_slot} "
+                        "is not present under the automatic reference roots"
+                    )
+                slot_reference_detail = (
+                    f"selected curated reference {selected.path} slot {selected.slot}"
+                    f"{f' ({selected.label})' if selected.label else ''}; {hint.note}"
+                )
+            else:
+                matches = rank_references(hd_slot, auto_references)
+                best = matches[0]
+                margin = confidence_margin(matches)
+                hd_stage = c_string(hd_slot, 0x058, 8)
+                if best.stage != hd_stage:
+                    raise ValueError(
+                        f"No exact-stage automatic GC reference for TPHD slot {hd_index} stage {hd_stage!r}; "
+                        f"best candidate is {best.stage!r} from {best.path} slot {best.slot}"
+                    )
+                if margin < auto_reference_min_margin:
+                    raise ValueError(
+                        f"Automatic GC reference is ambiguous for TPHD slot {hd_index}: "
+                        f"best {best.path} slot {best.slot} score {best.total}, margin {margin} "
+                        f"is below required {auto_reference_min_margin}"
+                    )
+                selected = next(
+                    reference
+                    for reference in auto_references
+                    if str(reference.path) == best.path and reference.slot == best.slot
+                )
+                label = f" ({best.label})" if best.label else ""
+                slot_reference_detail = (
+                    f"automatically selected {best.path} slot {best.slot}{label}; score {best.total}, "
+                    f"margin {margin}; used its complete coherent GC state and overlaid only "
+                    "TPHD identity/basic stats"
+                )
+            slot_reference_body = selected.body
+            slot_reference_coherent_scene = True
         template_offset = GC_QUEST_LOG_OFFSETS[hd_index]
         template_quest_log = template[template_offset : template_offset + GC_QUEST_LOG_SIZE]
         body, report = build_mapped_body(
@@ -345,7 +493,9 @@ def convert_cemu_save(
             hd_index,
             hd_index,
             profile,
-            gc_state_reference_body,
+            slot_reference_body,
+            slot_reference_detail,
+            slot_reference_coherent_scene,
         )
         patch_slot(out, body, hd_index)
 
@@ -417,7 +567,7 @@ def main() -> None:
     parser.add_argument("--slots", type=parse_slot_list, help="Comma-separated TPHD slot indexes to convert, default: all found")
     parser.add_argument(
         "--profile",
-        choices=("safe", "balanced", "progress"),
+        choices=PROFILES,
         default="safe",
         help="Conversion depth. safe is the current load-tested default; balanced/progress preserve more state but need validation.",
     )
@@ -434,10 +584,33 @@ def main() -> None:
         default=0,
         help="Slot index to read from --gc-state-reference, default: 0",
     )
+    parser.add_argument(
+        "--auto-gc-state-reference-root",
+        action="append",
+        type=Path,
+        help="Search this GCI file/directory for the best exact-stage scene reference; may be repeated",
+    )
+    parser.add_argument(
+        "--auto-reference-min-margin",
+        type=int,
+        default=50,
+        help="Minimum score gap between the best and second automatic reference (default: 50)",
+    )
+    parser.add_argument(
+        "--auto-reference-hints",
+        type=Path,
+        help="Optional version-1 JSON manifest mapping exact TPHD hashes to curated GC references",
+    )
     args = parser.parse_args()
 
     if args.template is None:
         raise SystemExit("No GCI template found. Pass --template /path/to/01-GZ2E-gczelda2.gci")
+    if args.gc_state_reference is not None and args.auto_gc_state_reference_root is not None:
+        raise SystemExit("Use either --gc-state-reference or --auto-gc-state-reference-root, not both")
+    if args.auto_reference_hints is not None and args.auto_gc_state_reference_root is None:
+        raise SystemExit("--auto-reference-hints requires --auto-gc-state-reference-root")
+    if args.auto_reference_min_margin < 0:
+        raise SystemExit("--auto-reference-min-margin must be non-negative")
 
     reports = convert_cemu_save(
         args.cemu_save,
@@ -447,6 +620,9 @@ def main() -> None:
         args.profile,
         args.gc_state_reference,
         args.gc_state_reference_slot,
+        args.auto_gc_state_reference_root,
+        args.auto_reference_min_margin,
+        args.auto_reference_hints,
     )
     print(f"Wrote {args.output} ({GC_GCI_SIZE:#x} bytes)")
     print_report(reports)
