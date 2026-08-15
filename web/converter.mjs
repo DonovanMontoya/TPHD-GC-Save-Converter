@@ -48,8 +48,9 @@ const RULES = [
 // retained, matching apply_gc_state_reference in tphd_to_gci.py.
 const REFERENCE_RANGES = [[0x058, 0x064], [0x1F0, 0x5F0], [0x7F0, 0x8F0]];
 
-// Cross-version location translation is unvalidated in the reverse direction,
-// so these stay native to the TPHD template. Mirrors LOCATION_RULE_NAMES.
+// Location structs are a mutually consistent bundle with no validated
+// cross-version translation in either direction, so they stay native to the
+// destination save. Mirrors LOCATION_RULE_NAMES in save_schema.py.
 const LOCATION_RULES = new Set([
   "player.horse_place", "player.return_place",
   "player.field_last_stay", "player.last_mark",
@@ -141,7 +142,7 @@ export function tphdToGci(hd, template, { profile = "safe", slot = 0, reference 
   const body = new Uint8Array(gcBody(template, slot));
   for (const rule of RULES) {
     const [name, , , , , confidence] = rule;
-    if (enabled(name, confidence, profile)) applyRule(body, hd, rule);
+    if (!LOCATION_RULES.has(name) && enabled(name, confidence, profile)) applyRule(body, hd, rule);
   }
   if (reference) {
     const referenceBody = gcBody(reference, referenceSlot);

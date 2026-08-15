@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
 
-from save_schema import CONVERSION_RULES, ConversionRule
+from save_schema import CONVERSION_RULES, LOCATION_RULE_NAMES, ConversionRule
 
 
 HD_QUEST_LOG_SIZE = 0xE00
@@ -228,6 +228,12 @@ def parse_slot_index(path: Path) -> int:
 def conversion_rule_enabled(rule: ConversionRule, profile: str) -> bool:
     if rule.strategy in ("template", "drop"):
         return False
+    # Location structs are a mutually consistent bundle. Copying part of it from
+    # TPHD while return_place comes from the GC template or a paired reference
+    # yields a scene state that never existed in either save, so the whole
+    # bundle stays GC-native until a paired-save diff validates a translation.
+    if rule.name in LOCATION_RULE_NAMES:
+        return False
     if rule.confidence in ("known", "observed"):
         return profile in ("balanced", "progress") or rule.name.startswith("player.info.") or rule.name.startswith("player.status_a.")
     if rule.confidence == "structural":
@@ -326,6 +332,17 @@ def build_mapped_body(
 
     report.fields.extend(
         [
+            FieldResult(
+                "location_structs",
+                "reference" if gc_state_reference_coherent_scene else "template",
+                "kept "
+                + ", ".join(sorted(LOCATION_RULE_NAMES))
+                + (
+                    " from coherent GC reference"
+                    if gc_state_reference_coherent_scene
+                    else "; TPHD location state is not grafted without a validated translation"
+                ),
+            ),
             FieldResult(
                 "player_config",
                 "reference" if gc_state_reference_coherent_scene else "template",

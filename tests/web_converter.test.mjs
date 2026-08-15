@@ -32,6 +32,17 @@ test("reference mode still honours the profile selector",()=>{
   assert.notDeepEqual([...safe.subarray(0x09C,0x0CC)],[...progress.subarray(0x09C,0x0CC)]);
 });
 
+test("forward conversion never grafts TPHD location structs",()=>{
+  const hd=hdFixture(0x71);
+  for(const [offset,size] of [[0x040,0x18],[0x058,0x0C],[0x064,0x1C],[0x080,0x1C]]) hd.set(new Uint8Array(size).fill(0xC5),offset);
+  const pair=checksumPair(hd.subarray(0,-8)); writeU32(hd,0xDF8,pair[0]); writeU32(hd,0xDFC,pair[1]);
+  const template=gciFixture(0x41);
+  const body=gcBody(tphdToGci(hd,template,{slot:0,profile:"progress"}),0);
+  const templateBody=gcBody(template,0);
+  for(const [offset,size] of [[0x040,0x18],[0x058,0x0C],[0x064,0x1C],[0x080,0x1C]])
+    assert.deepEqual([...body.subarray(offset,offset+size)],[...templateBody.subarray(offset,offset+size)]);
+});
+
 test("reverse conversion keeps every location struct from the HD template",()=>{
   const template=hdFixture(0x63); const gci=gciFixture(0x41);
   const out=gciToTphd(gci,template,{slot:0,profile:"progress"});
