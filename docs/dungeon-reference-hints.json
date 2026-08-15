@@ -1,0 +1,175 @@
+{
+  "version": 1,
+  "source": "https://www.reddit.com/r/cemu/comments/l14bdw/zelda_twilight_princess_hd_save_files/",
+  "description": "Curated entrance/mid-boss/boss mappings for the published TPHD dungeon save pack.",
+  "entries": [
+    {
+      "hd_sha256": "05bb433df7d1ed1c3c881b8b4978852bc8f1c1e545ed64eeee457a857bea9b18",
+      "reference_sha256": "21ff336534abf8a84da0aea87f7bc824b1f4397416bbb76382caa45e26deaebc",
+      "reference_slot": 0,
+      "note": "Dangoro mid-boss (TPGZ hundo practice save)"
+    },
+    {
+      "hd_sha256": "0bf01d9de46cb0623391aa7750abd9af235e44001eb2e6df2eddb344975bae53",
+      "reference_sha256": "0ff84c6e01b3ee8f74f88194f7334bb6b8d36632412a7f0d8e4fe3262f94a45b",
+      "reference_slot": 1,
+      "note": "Stallord boss"
+    },
+    {
+      "hd_sha256": "0f851cd47508d5b87055ae9bee0552c5d28c663d8ad21da64fe816840e441978",
+      "reference_sha256": "77fdd0d45570822b194c89ccc1fbaa05106eccb8c3d4e856a63af0e3e7ac27c5",
+      "reference_slot": 2,
+      "note": "Diababa boss"
+    },
+    {
+      "hd_sha256": "27d31489d313095563f11dad68bb23429541df64fc64b047110028536e633f4d",
+      "reference_sha256": "52cd52fd7273c3f611e4d19746d9c4aa5f0e708c31ca6b4502b9c820404dbdd1",
+      "reference_slot": 1,
+      "note": "Temple of Time mid-dungeon"
+    },
+    {
+      "hd_sha256": "2eed70f7e164bfc7629d685b8ba9b493e60fc7b3db29973fef460a2e7811229f",
+      "reference_sha256": "b6baf58cd3544182c5fc2d3c66d19f90e17e3f6e89d124ec2e15ee278b9993b5",
+      "reference_slot": 2,
+      "note": "Morpheel boss"
+    },
+    {
+      "hd_sha256": "3809779b438435b4007e6d26d3794ffc8ae04943d5788d27e92dc5fff1b5941f",
+      "reference_sha256": "77fdd0d45570822b194c89ccc1fbaa05106eccb8c3d4e856a63af0e3e7ac27c5",
+      "reference_slot": 1,
+      "note": "Forest Temple mid-dungeon"
+    },
+    {
+      "hd_sha256": "3adbb99b765a3f4bc46bb7fcf85abc480304d8644bcbb258f314ce2b2456e1b8",
+      "reference_sha256": "52cd52fd7273c3f611e4d19746d9c4aa5f0e708c31ca6b4502b9c820404dbdd1",
+      "reference_slot": 0,
+      "note": "Temple of Time entrance"
+    },
+    {
+      "hd_sha256": "3df8fc465329e13352dd865891c60436d745fd4c8c46a0a44752e225f89d9ebb",
+      "reference_sha256": "fb4907c595bd70f84bad948a8bd4f867288b233c7f330453223b2be167fab170",
+      "reference_slot": 0,
+      "note": "Hyrule Castle Darknut mid-boss (TPGZ hundo practice save)"
+    },
+    {
+      "hd_sha256": "41145a997b2c581fedd0cad31745d62a9f214a88b23c8db1c84187221af1d2c9",
+      "reference_sha256": "5fbb4f61063934231ef19b55e5e5b6210cde7d7018f2afb0c2d0fa1e9ed697c5",
+      "reference_slot": 2,
+      "note": "Deku Toad mid-boss"
+    },
+    {
+      "hd_sha256": "57fde122e34f34a755bf54f8728dbda9ec1e78ca3d0da4f6348c3055542b2c91",
+      "reference_sha256": "40498c3d10b553ed59a2868c955bf47236806cdda48b619c08dbfe55fffe9176",
+      "reference_slot": 2,
+      "note": "Aeralfos mid-boss"
+    },
+    {
+      "hd_sha256": "5c75d2d380d40ac92964e822807f17bc95430af17e3566a23dd0aa34405a39ea",
+      "reference_sha256": "9f7b9807224a320fd246c85165291c9cae9cf6ca0c5a3c87de6ce3b390774949",
+      "reference_slot": 0,
+      "note": "Fyrus boss (TPGZ hundo practice save)"
+    },
+    {
+      "hd_sha256": "6604b57c4fed7615046e5013451b2e1729a76093c2fff3ceec642ba360bd3b17",
+      "reference_sha256": "388f980bf616b81335fa36317b34b0fef92de3de6f84c2360981494bf581bb90",
+      "reference_slot": 1,
+      "note": "Hidden Village quest"
+    },
+    {
+      "hd_sha256": "6701843d04e0d9dc3eb7fa6a39b43dd05cfc524d8e834cfd214266956af83617",
+      "reference_sha256": "fc3dee40b22c480d7b917a058974e061686b137a87c268a5312fcce42cc4f5c6",
+      "reference_slot": 2,
+      "note": "Argorok boss"
+    },
+    {
+      "hd_sha256": "69b985d6639f41ad3e85d250f97137e7026320e3eaa17e2b6ce4ecfb41f833c4",
+      "reference_sha256": "305ae075b41ca0d67818b67b8cf5acf549e56e223af916968145aa6f37767be3",
+      "reference_slot": 2,
+      "note": "Death Sword mid-boss"
+    },
+    {
+      "hd_sha256": "71d68061139247e37280204b17674cdf6940d10833d4f1e6a2633cb2967a4551",
+      "reference_sha256": "388f980bf616b81335fa36317b34b0fef92de3de6f84c2360981494bf581bb90",
+      "reference_slot": 2,
+      "note": "City in the Sky entrance"
+    },
+    {
+      "hd_sha256": "73a135957e09f72286d679c3b83d1e5a1d751f3218b20179386f122fc01d2314",
+      "reference_sha256": "5bc0608dcd613b51ead52f49c669974f0cdece9c5bf7c1ff3e1e234bb2d1398c",
+      "reference_slot": 0,
+      "note": "Zant boss"
+    },
+    {
+      "hd_sha256": "7dab765ba42e8d88ad3ddc452d5a350f174d6023305c694a99bd63666e31ad44",
+      "reference_sha256": "923d3d61eda77a835e685ee6029f29bdbd6e85cd77561ff051ce6f8cfbda8327",
+      "reference_slot": 1,
+      "note": "Palace of Twilight entrance"
+    },
+    {
+      "hd_sha256": "862e84f1fb4e0fd6f92c0009d168df34cdc02151a58fa1855c18389a05a73423",
+      "reference_sha256": "fb17a0f972db3299fbd25f4ce77eb385d79e7376b4f294458a602cd0059abacc",
+      "reference_slot": 0,
+      "note": "Armogohma boss (derived from native TPGZ post-ToT state)"
+    },
+    {
+      "hd_sha256": "a7044f5ae6bd406d669dc60afb4215fc17e97a2ff5bd3fd13bc47c5eaaed3c21",
+      "reference_sha256": "951976933535c6db3736bd8165ec11f46582201a347d8015c0ed8bdfbceb559f",
+      "reference_slot": 2,
+      "note": "Puppet Zelda final-boss sequence"
+    },
+    {
+      "hd_sha256": "ac6c3edf8616db896f533acfe91c2f3f47f571f1e7c7bb704097bd0ae7631e20",
+      "reference_sha256": "c57d88da41e4c3de0482616a045ce2e1ed57301206187e0f815c605efd707127",
+      "reference_slot": 2,
+      "note": "Goron Mines entrance"
+    },
+    {
+      "hd_sha256": "b036d7f98ff3c02fc145d65fe343de3c9523d80e61123a8affeabebdbfe1b658",
+      "reference_sha256": "923d3d61eda77a835e685ee6029f29bdbd6e85cd77561ff051ce6f8cfbda8327",
+      "reference_slot": 2,
+      "note": "Palace of Twilight after both Sols"
+    },
+    {
+      "hd_sha256": "bc8ce9b60ace8dbff13037e8da9502b19741ae37df92b85ea121c1dc018a556a",
+      "reference_sha256": "9c9122057f262ea3363dc8d984e1b1e9d70fa8c6087f565981417d86a39c21db",
+      "reference_slot": 2,
+      "note": "Lakebed entrance"
+    },
+    {
+      "hd_sha256": "bf4b0d75233ef204d829fed75a77d9aead11b5d5d6bc59b906f13202472caef2",
+      "reference_sha256": "aac01232d1b0752a2ae927c3ad94ad85de243bc2a7298af823c306799450e8d8",
+      "reference_slot": 0,
+      "note": "Darkhammer mid-boss (TPGZ hundo practice save)"
+    },
+    {
+      "hd_sha256": "c37ce464a90cfef17f1b5ced2ccc467f342d92626434094ea56a0f284bc295b9",
+      "reference_sha256": "951976933535c6db3736bd8165ec11f46582201a347d8015c0ed8bdfbceb559f",
+      "reference_slot": 1,
+      "note": "Hyrule Castle entrance"
+    },
+    {
+      "hd_sha256": "cd40901132878f36ac1c8e05cb053423a77874499af7c3fe7897afa7918474bd",
+      "reference_sha256": "305ae075b41ca0d67818b67b8cf5acf549e56e223af916968145aa6f37767be3",
+      "reference_slot": 0,
+      "note": "Arbiter's Grounds entrance"
+    },
+    {
+      "hd_sha256": "d3c103d45d46c04074056b0970f9133d4d269263530ba13085a6314bd384b34c",
+      "reference_sha256": "77fdd0d45570822b194c89ccc1fbaa05106eccb8c3d4e856a63af0e3e7ac27c5",
+      "reference_slot": 0,
+      "note": "Forest Temple entrance"
+    },
+    {
+      "hd_sha256": "d48daae79cf6e8d41a7befb4e1a00705280cecac2fd3b2af286706ef8300aee3",
+      "reference_sha256": "adc4cd64c643770747c34cd13350f3bf2a41e02944c141dd264460dc61e5dfe6",
+      "reference_slot": 0,
+      "note": "Blizzeta boss (TPGZ hundo practice save)"
+    },
+    {
+      "hd_sha256": "f86d942db521732bcda8ceac9adbe5cf3d5abdb2bd2ee66294dc8857182d5597",
+      "reference_sha256": "4c1e7e632093e12eb96b4ec9c9454c3e1af334ea98aac778e4fac35cf1757657",
+      "reference_slot": 0,
+      "note": "Snowpeak Ruins entrance"
+    }
+  ]
+}

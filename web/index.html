@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Convert Twilight Princess HD and GameCube save files locally in your browser.">
+  <title>Twilight Princess Save Converter</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div class="wordmark">TP Save Tools</div>
+      <h1>Twilight Princess save converter</h1>
+      <p class="lede">Convert save data between Twilight Princess HD and the GameCube release. Processing happens locally in your browser.</p>
+    </header>
+
+    <section class="converter" aria-labelledby="converter-title">
+      <div class="section-head">
+        <div><h2 id="converter-title">Convert a save</h2><p class="section-note">Choose a direction, then provide your save and a compatible template.</p></div>
+        <div class="segmented" role="radiogroup" aria-label="Conversion direction">
+          <button type="button" class="active" data-direction="forward">TPHD → GC</button>
+          <button type="button" data-direction="reverse">GC → TPHD <small>experimental</small></button>
+        </div>
+      </div>
+
+      <form id="converter-form">
+        <div class="file-grid">
+          <label class="file-card"><span class="file-title" id="source-title">TPHD slot</span><span class="file-help" id="source-help">Choose one checksum-valid ZTPxx.dat file</span><input id="source" type="file" required><span class="file-name">Browse…</span></label>
+          <label class="file-card"><span class="file-title" id="template-title">GameCube template</span><span class="file-help" id="template-help">Your existing NTSC-U Twilight Princess .gci</span><input id="template" type="file" required><span class="file-name">Browse…</span></label>
+          <label class="file-card optional" id="reference-card"><span class="file-title">GC state reference <small>optional</small></span><span class="file-help">A coherent checkpoint .gci. Supplies return place, stage memory, and event flags only; your mapped TPHD stats and inventory are kept</span><input id="reference" type="file"><span class="file-name">Browse…</span></label>
+        </div>
+
+        <div class="options">
+          <label>Profile<select id="profile"><option value="safe">Safe</option><option value="balanced">Balanced</option><option value="progress">Progress</option></select></label>
+          <label>Destination / source slot<select id="slot"><option value="0">Quest Log 1</option><option value="1">Quest Log 2</option><option value="2">Quest Log 3</option></select></label>
+          <label id="reference-slot-wrap">Reference slot<select id="reference-slot"><option value="0">Quest Log 1</option><option value="1">Quest Log 2</option><option value="2">Quest Log 3</option></select></label>
+        </div>
+
+        <div class="notice" id="direction-notice"><strong>Forward conversion:</strong> Safe mode preserves the GC template’s native location. For the published dungeon pack, the command-line curated-reference workflow remains the most complete option.</div>
+        <button class="convert" type="submit">Convert and download</button>
+        <p id="status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="notes"><h2>Notes</h2><ul><li>Files are processed locally and are not uploaded.</li><li>You must provide your own save template; no Nintendo data is included.</li><li>TPHD → GC has passed 30/30 automated Dolphin stage-load checks.</li><li>GC → TPHD is experimental. Keep a backup and test the result in Cemu.</li></ul></section>
+  </main>
+  <footer><span>Unofficial fan utility</span><a href="https://github.com/DonovanMontoya/TPHD-GC-Save-Converter">Source and documentation</a></footer>
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>

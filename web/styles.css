@@ -1,0 +1,80 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f1e8;
+  --panel: #fffdf7;
+  --text: #20251f;
+  --muted: #62685f;
+  --border: #cbc8bd;
+  --green: #315b42;
+  --green-dark: #244533;
+  --warning: #f8f1d8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+main { width: min(920px, calc(100% - 40px)); margin: 0 auto; }
+
+header { padding: 54px 0 34px; border-bottom: 1px solid var(--border); }
+.wordmark { color: var(--green); font-size: 14px; font-weight: 700; }
+h1 { margin: 12px 0 10px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(36px, 6vw, 58px); line-height: 1.08; font-weight: 600; letter-spacing: -.025em; }
+.lede { max-width: 660px; margin: 0; color: var(--muted); font-size: 18px; }
+
+.converter { margin: 36px 0 28px; padding: 30px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 2px 8px rgb(40 45 38 / 6%); }
+.section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+.section-head h2, .notes h2 { margin: 0; font-size: 24px; line-height: 1.2; }
+.section-note { margin: 7px 0 0; color: var(--muted); font-size: 14px; }
+
+.segmented { display: flex; padding: 3px; background: #ebe8df; border-radius: 6px; }
+.segmented button { border: 0; border-radius: 4px; padding: 9px 13px; background: transparent; color: var(--muted); cursor: pointer; font: inherit; font-size: 14px; }
+.segmented button.active { background: white; color: var(--text); box-shadow: 0 1px 4px rgb(30 35 29 / 12%); }
+.segmented small { display: block; font-size: 9px; line-height: 1; text-transform: uppercase; }
+
+.file-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 28px 0 22px; }
+.file-card { min-height: 160px; padding: 18px; display: flex; flex-direction: column; background: white; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+.file-card:hover { border-color: var(--green); }
+.file-card[hidden] { display: none; }
+.file-card input { position: absolute; opacity: 0; pointer-events: none; }
+.file-title { font-weight: 650; }
+.file-title small { color: var(--muted); font-weight: 400; }
+.file-help { margin-top: 7px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+.file-name { margin-top: auto; padding-top: 15px; color: var(--green); font-size: 13px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.options label { color: var(--muted); font-size: 13px; }
+.options select { display: block; width: 100%; margin-top: 6px; padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: white; color: var(--text); font: inherit; }
+
+.notice { margin: 20px 0; padding: 13px 15px; background: var(--warning); border: 1px solid #ded3aa; border-radius: 5px; color: #4f4a35; font-size: 13px; }
+.convert { border: 0; border-radius: 5px; padding: 12px 18px; background: var(--green); color: white; cursor: pointer; font: inherit; font-weight: 650; }
+.convert:hover { background: var(--green-dark); }
+#status { min-height: 24px; margin: 14px 0 0; font-size: 13px; }
+.success { color: var(--green); }
+.error { color: #a33b2d; }
+
+.notes { margin: 0 0 60px; padding: 24px 0 0; border-top: 1px solid var(--border); }
+.notes h2 { font-size: 18px; }
+.notes ul { margin: 12px 0 0; padding-left: 20px; color: var(--muted); }
+.notes li + li { margin-top: 6px; }
+
+footer { display: flex; justify-content: space-between; gap: 20px; padding: 20px max(20px, calc((100vw - 920px) / 2)); border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+footer a { color: var(--green); }
+
+@media (max-width: 720px) {
+  main { width: min(100% - 24px, 920px); }
+  header { padding-top: 34px; }
+  .converter { margin-top: 24px; padding: 20px; }
+  .section-head { display: block; }
+  .segmented { margin-top: 18px; }
+  .file-grid, .options { grid-template-columns: 1fr; }
+  .file-card { min-height: 125px; }
+  footer { display: block; }
+  footer a { display: inline-block; margin-top: 6px; }
+}

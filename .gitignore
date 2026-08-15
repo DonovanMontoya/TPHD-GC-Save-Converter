@@ -10,9 +10,27 @@ TP Saves (Cemu)/
 Twilight Princess Any% Savefiles NTSC/
 TP 100% Saves - NTSC-U 6.17.20/
 tp/
+references/tpgz-hundo/
 
 # Generated converter/probe outputs.
 artifacts/
 probe-exports/
 *.gci
 *.dat
+
+# Legally dumped game images are local-only and must never enter git.
+*.ciso
+*.gcm
+*.gcz
+*.iso
+*.rvz
+*.tgc
+*.wbfs
+*.wia
+
+# Local tooling state.
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage

@@ -16,6 +16,52 @@ python3 tphd_to_gci.py CemuSave exported-safe.gci
 The script auto-discovers `ZTP00.dat`, `ZTP01.dat`, and `ZTP02.dat` under the
 Cemu save folder and writes the matching GC quest-log slots.
 
+## Browser version
+
+`web/` contains a dependency-free static converter for GitHub Pages. It runs
+entirely in the browser: selected save files are never uploaded or sent to a
+server. It supports TPHD → GC with an optional explicit GC checkpoint reference
+and the initial experimental GC → TPHD path.
+
+Serve it locally with:
+
+```bash
+python3 -m http.server 8000 --directory web
+```
+
+The Pages workflow in `.github/workflows/pages.yml` deploys `web/` after it is
+enabled under **Repository Settings → Pages → Source: GitHub Actions**. The
+workflow follows GitHub's current custom Pages deployment layout.
+
+## Experimental GameCube → TPHD
+
+Reverse conversion requires a checksum-valid TPHD `ZTPxx.dat` template. This
+preserves HD-only options, runtime/current-stage state, and tail bytes that have
+no GameCube equivalent:
+
+```bash
+python3 gci_to_tphd.py input.gci ZTP00-template.dat ZTP00.dat \
+  --gc-slot 0 --profile safe
+```
+
+`safe` maps identity and basic status, `balanced` adds known inventory/player
+structures, and `progress` also maps the structurally compatible stage, visited
+room, and event blocks. Every location struct — return place, horse place,
+field last stay, and last mark — remains inherited from the TPHD template at all
+profiles, because cross-version location grafting is not validated. Reverse
+outputs have verified structure and checksums but still require Cemu/TPHD live
+gameplay validation; back up the original save before testing.
+
+To install the pinned practice references and convert the entire published
+dungeon pack into ten GCI files:
+
+```bash
+python3 tools/install_tpgz_references.py
+python3 tools/convert_dungeon_pack.py
+```
+
+The outputs are written under `artifacts/dungeon-pack/` and remain local.
+
 If the template is not in `GameCubeSave/Card A/01-GZ2E-gczelda2.gci`, pass it:
 
 ```bash
@@ -35,6 +81,54 @@ python3 tphd_to_gci.py CemuSave exported-progress-paired.gci \
 
 That keeps mapped TPHD stats/inventory while copying the GC return-place, stage
 memory, and event flags from the paired reference.
+
+For a collection of GameCube saves, the converter can rank every valid quest-log
+slot and choose a same-stage reference automatically. For the included dungeon
+pack, also pass its curated exact-hash manifest:
+
+```bash
+python3 tools/install_tpgz_references.py
+python3 tphd_to_gci.py CemuSave exported-auto.gci \
+  --auto-gc-state-reference-root "Twilight Princess Any% Savefiles NTSC" \
+  --auto-gc-state-reference-root "TP 100% Saves - NTSC-U 6.17.20" \
+  --auto-gc-state-reference-root references/tpgz-hundo \
+  --auto-reference-hints docs/dungeon-reference-hints.json
+```
+
+The [pack author's description](https://www.reddit.com/r/cemu/comments/l14bdw/zelda_twilight_princess_hd_save_files/)
+defines slots 0, 1, and 2 as dungeon entrance, mid-boss, and main boss. It also
+explains that Ooccoo was added to the latter checkpoints. Consequently, their
+saved return stage can be outside the dungeon and is not a reliable milestone
+identifier. `docs/dungeon-reference-hints.json` binds each known source file's
+SHA-256 to an annotated GC checkpoint and deliberately rejects a known source
+when no equivalent checkpoint exists. The installer downloads five 2.7 KB raw
+GameCube quest logs and the GPL license from the official
+[TPGZ practice-tool repository](https://github.com/zsrtp/tpgz), pinned to one
+commit and verified by SHA-256. Regenerate the hint manifest with
+`python3 tools/build_dungeon_hint_manifest.py` after installing those assets.
+
+The curated manifest structurally supports all 30 corpus rows (28 unique save
+files). Twenty-seven unique sources use an existing native checkpoint. TPGZ
+does not ship a pre-Armogohma body, so the installer deterministically derives
+that last reference from its native post-Temple state: it preserves the
+Dominion Rod/inventory, clears the documented Temple boss-dead, post-boss-life,
+boss-demo, and `F_0267` Temple-clear bits, and sets the native `D_MN06A` boss
+return place. That final derived checkpoint is hash-pinned, regression tested,
+and live-tested in Dolphin 2606a: it loaded Quest Log 3 into `D_MN06A`, played
+the Armogohma introduction, and entered controllable boss gameplay with the
+Dominion Rod equipped. Without a matching hash hint, automatic mode falls back
+to ranking and rejects a slot when there is no exact-stage match or when the
+top-two score margin is below 50 (configurable with
+`--auto-reference-min-margin`).
+
+Automatic reference mode starts from the selected reference's entire coherent
+GC quest state, then overlays only TPHD health, rupees, oil, names, play time,
+death count, and clear count. This avoids mixing mutually dependent dungeon,
+inventory, location, and event structures. The normal profile choice does not
+expand the overlay while automatic reference mode is active. The Forest Temple
+entrance and derived Armogohma checkpoint were validated in Dolphin 2606a
+through live gameplay; exact inputs, hashes, and observations are recorded in
+`docs/dolphin-test-log.md`.
 
 ## Profiles
 
@@ -197,6 +291,12 @@ wooden-sword-scent GC save at the same story point. The generated
 reference for return place, event gates, and relevant stage switches while
 keeping TPHD stats and inventory.
 
+This paired export was validated in Dolphin 2606a against the NTSC-U `GZ2E01`
+disc on 2026-08-11. It appears in Quest Log 1 and loads into live `F_SP121`
+gameplay as wolf Link with Midna riding, Sense available, and the mapped 299
+rupees. Exact hashes and observations are recorded in
+`docs/dolphin-test-log.md`.
+
 Before testing a probe in Dolphin, inspect it:
 
 ```bash
@@ -223,3 +323,62 @@ do not spend time testing that probe.
 - Generated `.gci` exports and JSON reports are under `artifacts/`.
 - Generated probe GCIs are under `probe-exports/`.
 - Git tracks the converter, schema, analysis scripts, and documentation.
+
+## Development
+
+Run the complete dependency-free check suite with:
+
+```bash
+python3 tools/check.py
+```
+
+This compiles the Python sources, runs synthetic unit/integration tests, and,
+when the ignored local save fixtures are available, reproduces the known paired
+GC-reference artifact byte-for-byte and inspects its scene state. GitHub Actions
+runs the portable portion on Python 3.10 through 3.13.
+
+Automated checks prove file structure and mapping invariants, not gameplay.
+Focused Dolphin results belong in `docs/dolphin-test-log.md`.
+
+For an isolated emulator boot test, supply your legally dumped NTSC-U game
+image. The harness mounts the converted GCI in a temporary Dolphin user folder,
+leaving normal Dolphin settings and saves untouched. It always forces Dolphin's
+volume to zero:
+
+```bash
+python3 tools/dolphin_smoke.py \
+  --game "/path/to/your/Twilight Princess image.rvz" \
+  --gci artifacts/exports/exported-progress-paired-wood-scent.gci
+```
+
+Add `--movie tests/dolphin/load-slot-0.dtm` once a deterministic input movie is
+recorded for the exact game revision. Alternatively, `--input-script` accepts
+timestamped native GameCube controller commands without relying on keyboard
+focus; for example, a line `12.0 PRESS START` followed by
+`12.08 RELEASE START`. Use `--video-backend Metal` for a visible validation
+run. The harness stores the exact command and controller trace under
+`artifacts/dolphin-smoke/`. A boot without deterministic input does not prove
+that gameplay loaded from the save. Add `--expect-disc-path D_MN06A` to enable
+Dolphin's disc file monitor and make the run fail unless the game actually
+loads that stage's files; the evidence is saved as `disc-paths.log`.
+
+To run that stage-load assertion across every slot in the generated dungeon
+pack, use the unattended batch wrapper (all launches are isolated and muted):
+
+```bash
+python3 tools/dolphin_validate_pack.py \
+  --game "/path/to/your/Twilight Princess image.rvz" \
+  --keep-going
+```
+
+Each probe duplicates one checkpoint across all three menu positions, removing
+save-menu selection as a source of ambiguity. Progress is resumable with
+`--start`; machine-readable results and per-run disc-path evidence are kept in
+`artifacts/dolphin-pack-validation/`.
+
+The completed unattended audit passed 30/30 exact-stage checks: every converted
+checkpoint loaded its encoded return stage in Dolphin with no mismatch or
+loader failure. Forest Temple and Armogohma also have focused visible-gameplay
+observations. Exact-stage loading is strong compatibility evidence, but it does
+not by itself prove every quest event remains semantically correct during
+extended play.

@@ -1,0 +1,4 @@
+# Absolute seconds after Dolphin launch, followed by native pipe commands.
+# This is a controller-transport smoke test, not a complete save-load movie.
+4.00 PRESS START
+4.08 RELEASE START
