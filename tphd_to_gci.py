@@ -330,19 +330,28 @@ def build_mapped_body(
     if not gc_state_reference_coherent_scene:
         normalize_wolf_abilities(body, hd_slot, report, profile)
 
+    # Location provenance has three distinct cases. An explicit reference grafts
+    # only return_place, so the bundle is genuinely mixed and must not be
+    # reported as wholly template-sourced.
+    never_grafted = "; TPHD location state is not grafted without a validated translation"
+    if gc_state_reference_coherent_scene:
+        location_status = "reference"
+        location_detail = "kept " + ", ".join(sorted(LOCATION_RULE_NAMES)) + " from coherent GC reference"
+    elif gc_state_reference_body is not None:
+        location_status = "mixed"
+        location_detail = (
+            "player.return_place from paired GC reference; "
+            + ", ".join(sorted(LOCATION_RULE_NAMES - {"player.return_place"}))
+            + " from GC template"
+            + never_grafted
+        )
+    else:
+        location_status = "template"
+        location_detail = "kept " + ", ".join(sorted(LOCATION_RULE_NAMES)) + " from GC template" + never_grafted
+
     report.fields.extend(
         [
-            FieldResult(
-                "location_structs",
-                "reference" if gc_state_reference_coherent_scene else "template",
-                "kept "
-                + ", ".join(sorted(LOCATION_RULE_NAMES))
-                + (
-                    " from coherent GC reference"
-                    if gc_state_reference_coherent_scene
-                    else "; TPHD location state is not grafted without a validated translation"
-                ),
-            ),
+            FieldResult("location_structs", location_status, location_detail),
             FieldResult(
                 "player_config",
                 "reference" if gc_state_reference_coherent_scene else "template",
