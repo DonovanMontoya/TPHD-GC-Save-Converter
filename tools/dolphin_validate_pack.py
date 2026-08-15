@@ -40,6 +40,17 @@ def duplicate_slot(gci: bytes, source_slot: int) -> bytes:
     return bytes(probe)
 
 
+def stage_disc_path(stage: str) -> str:
+    """Return the stage as a complete disc path segment.
+
+    Dolphin's file monitor logs paths such as ``res/Stage/D_MN06A/STG_00.arc``.
+    A bare stage name would match by substring, so an assertion for ``D_MN06``
+    would also accept the distinct ``D_MN06A`` checkpoint.
+    """
+
+    return f"/{stage}/"
+
+
 def discover_jobs(pack: Path) -> list[tuple[Path, int, str]]:
     jobs: list[tuple[Path, int, str]] = []
     for gci_path in sorted(pack.glob("*.gci")):
@@ -61,7 +72,7 @@ def recover_completed_results(
         if not matches:
             continue
         evidence = matches[-1].read_text(encoding="utf-8", errors="replace")
-        if expected_stage in evidence:
+        if stage_disc_path(expected_stage) in evidence:
             recovered[index] = {
                 "index": index,
                 "gci": gci_path.name,
@@ -125,7 +136,7 @@ def main() -> None:
                 probe_path,
                 None,
                 args.input_script,
-                expected_stage,
+                stage_disc_path(expected_stage),
                 "Null",
                 args.timeout,
                 output_dir,

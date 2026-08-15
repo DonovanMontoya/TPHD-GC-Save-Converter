@@ -40,6 +40,7 @@ from tools.dolphin_validate_pack import (
     discover_jobs,
     duplicate_slot,
     recover_completed_results,
+    stage_disc_path,
     stage_name,
 )
 
@@ -495,6 +496,13 @@ class DolphinHarnessTests(unittest.TestCase):
         body[0x058:0x060] = b"bad-name"
         with self.assertRaisesRegex(ValueError, "invalid return-place stage"):
             stage_name(bytes(body))
+
+    def test_batch_stage_assertion_requires_a_complete_path_segment(self) -> None:
+        """D_MN06 and D_MN06A are distinct checkpoints, not a substring match."""
+        evidence = "W[FileMon]:  123 kB res/Stage/D_MN06A/STG_00.arc\n"
+        self.assertIn(stage_disc_path("D_MN06A"), evidence)
+        self.assertNotIn(stage_disc_path("D_MN06"), evidence)
+        self.assertIn(stage_disc_path("D_MN06"), "res/Stage/D_MN06/R00_00.arc")
 
     def test_batch_job_discovery_is_stable_and_slot_ordered(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
