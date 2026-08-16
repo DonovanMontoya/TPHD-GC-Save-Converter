@@ -102,3 +102,18 @@ test("slot choice keeps a usable selection and only moves off an unusable one", 
   assert.equal(chooseSlot(summary, 0), 1, "an empty slot falls back to the first real save");
   assert.equal(chooseSlot([{ slot: 0, name: "", usable: false }], 0), 0, "with no usable slot the selection stands");
 });
+
+test("profile coverage discounts ranges an explicit reference overwrites", () => {
+  // stage_memory (0x400) and event_flags (0x100) are mapped by progress and sit
+  // exactly inside REFERENCE_RANGES, so a reference replaces them afterwards.
+  const plain = profileCoverage("progress");
+  const withReference = profileCoverage("progress", { reference: true });
+  assert.equal(Math.round((plain - withReference) * 0xA8C), 0x500);
+  assert.ok(withReference < plain);
+
+  // safe and balanced never enable the structural rules, so nothing they map
+  // falls inside the reference ranges and the figure must not move.
+  for (const profile of ["safe", "balanced"]) {
+    assert.equal(profileCoverage(profile, { reference: true }), profileCoverage(profile));
+  }
+});

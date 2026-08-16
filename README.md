@@ -217,10 +217,19 @@ Current probe results:
 - `probe-visited_room_memory.gci`: loads.
 - `probe-event_flags.gci`: loads.
 
-The current `balanced` profile now excludes `player.return_place`, so it has
-the same load-safe shape as `exported-balanced-minus-return.gci`.
-The current `progress` profile also excludes `player.return_place`, so it has
-the same loader-safe shape as `exported-progress-minus-return.gci`.
+The current `balanced` and `progress` profiles exclude every location rule, not
+just `player.return_place`, so they no longer share a shape with
+`exported-balanced-minus-return.gci` or `exported-progress-minus-return.gci`.
+Those artifacts still carried `player.horse_place`, `player.field_last_stay`,
+and `player.last_mark` from TPHD, so their load results are not evidence for
+the current mapping.
+
+The load evidence for the shape that ships today is the 2026-08-14
+re-validation in `docs/dolphin-test-log.md`: a regenerated paired `progress`
+export reached `F_SP121` room 2 and went on to load actor archives, so it
+reaches live gameplay rather than stalling in a menu. That run is a stage/room
+load observation on the Null backend and does not by itself verify rupees,
+scent, or Midna riding.
 
 Focused scene-state probes are available in `probe-exports/` with names starting
 `probe-scene_progress_`. They test return-stage/current-stage restoration on

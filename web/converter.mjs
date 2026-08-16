@@ -89,14 +89,28 @@ export function chooseSlot(summary, current) {
   return summary.find((entry) => entry.usable)?.slot ?? current;
 }
 
-// Share of the GC quest-log body a profile actually writes; the rest is
+function referenceOverlap(offset, size) {
+  let total = 0;
+  for (const [start, end] of REFERENCE_RANGES) {
+    total += Math.max(0, Math.min(offset + size, end) - Math.max(offset, start));
+  }
+  return total;
+}
+
+// Share of the GC quest-log body that ends up TPHD-derived; the rest is
 // inherited from the destination save. Derived from RULES so the copy on the
 // page cannot drift away from the mapping table.
-export function profileCoverage(profile) {
+//
+// A reference is applied after the mapping rules, so any mapped byte inside
+// REFERENCE_RANGES is overwritten and must not be counted as a TPHD
+// contribution. Under progress that is stage_memory and event_flags, which is
+// most of what the profile appears to transfer.
+export function profileCoverage(profile, { reference = false } = {}) {
   assertProfile(profile);
   let mapped = 0;
-  for (const [name, , size, , , confidence] of RULES) {
-    if (!LOCATION_RULES.has(name) && enabled(name, confidence, profile)) mapped += size;
+  for (const [name, gcOffset, size, , , confidence] of RULES) {
+    if (LOCATION_RULES.has(name) || !enabled(name, confidence, profile)) continue;
+    mapped += reference ? size - referenceOverlap(gcOffset, size) : size;
   }
   return mapped / GC_BODY_SIZE;
 }

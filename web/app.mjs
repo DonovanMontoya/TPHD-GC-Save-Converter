@@ -8,6 +8,7 @@ const sourceInput = document.querySelector("#source");
 const destinationInput = document.querySelector("#destination");
 const profileSelect = document.querySelector("#profile");
 const slotSelect = document.querySelector("#slot");
+const referenceInput = document.querySelector("#reference");
 
 const FORMAT_LABELS = { tphd: "Twilight Princess HD save", gc: "GameCube save" };
 const loaded = { source: null, destination: null };
@@ -15,8 +16,14 @@ const loaded = { source: null, destination: null };
 // element and runs immediately after every file is read.
 const rejected = { source: null, destination: null };
 
+// A reference only participates in forward conversions, and it overwrites part
+// of what the profile mapped, so it changes the share that stays TPHD-derived.
+function referenceActive() {
+  return Boolean(referenceInput.files[0]) && loaded.source?.format !== "gc";
+}
+
 function percent(profile) {
-  return `${Math.round(profileCoverage(profile) * 100)}%`;
+  return `${Math.round(profileCoverage(profile, { reference: referenceActive() }) * 100)}%`;
 }
 
 // The destination supplies every byte the mapping table does not write, so the
@@ -29,7 +36,8 @@ function describeProfile() {
     balanced: "Experimental. Adds inventory, item flags, and counts.",
     progress: "Experimental and highest risk. Adds stage memory, visited rooms, and event flags.",
   }[profile];
-  document.querySelector("#profile-note").textContent = `Writes ${share} of the quest log; the rest comes from your destination save. ${note}`;
+  const rest = referenceActive() ? "your destination save and the GC reference" : "your destination save";
+  document.querySelector("#profile-note").textContent = `Writes ${share} of the quest log; the rest comes from ${rest}. ${note}`;
 }
 
 function fillSlots(select, data) {
@@ -106,8 +114,9 @@ destinationInput.addEventListener("change", async () => {
 });
 profileSelect.addEventListener("change", refresh);
 
-document.querySelector("#reference").addEventListener("change", (event) => {
-  event.target.closest(".file-card").querySelector(".file-name").textContent = event.target.files[0]?.name ?? "Choose file…";
+referenceInput.addEventListener("change", () => {
+  referenceInput.closest(".file-card").querySelector(".file-name").textContent = referenceInput.files[0]?.name ?? "Choose file…";
+  refresh();
 });
 
 function download(data, name) {
@@ -127,7 +136,6 @@ form.addEventListener("submit", async (event) => {
     let output;
     let filename;
     if (loaded.source.format === "tphd") {
-      const referenceInput = document.querySelector("#reference");
       const reference = referenceInput.files[0] ? new Uint8Array(await referenceInput.files[0].arrayBuffer()) : null;
       const referenceSlot = Number(document.querySelector("#reference-slot").value);
       output = tphdToGci(loaded.source.data, loaded.destination.data, { profile, slot, reference, referenceSlot });
