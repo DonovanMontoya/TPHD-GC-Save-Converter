@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
 
-from save_schema import CONVERSION_RULES, ConversionRule
+from save_schema import CONVERSION_RULES, LOCATION_RULE_NAMES, ConversionRule
 
 
 HD_QUEST_LOG_SIZE = 0xE00
@@ -228,6 +228,12 @@ def parse_slot_index(path: Path) -> int:
 def conversion_rule_enabled(rule: ConversionRule, profile: str) -> bool:
     if rule.strategy in ("template", "drop"):
         return False
+    # Location structs are a mutually consistent bundle. Copying part of it from
+    # TPHD while return_place comes from the GC template or a paired reference
+    # yields a scene state that never existed in either save, so the whole
+    # bundle stays GC-native until a paired-save diff validates a translation.
+    if rule.name in LOCATION_RULE_NAMES:
+        return False
     if rule.confidence in ("known", "observed"):
         return profile in ("balanced", "progress") or rule.name.startswith("player.info.") or rule.name.startswith("player.status_a.")
     if rule.confidence == "structural":
@@ -324,8 +330,28 @@ def build_mapped_body(
     if not gc_state_reference_coherent_scene:
         normalize_wolf_abilities(body, hd_slot, report, profile)
 
+    # Location provenance has three distinct cases. An explicit reference grafts
+    # only return_place, so the bundle is genuinely mixed and must not be
+    # reported as wholly template-sourced.
+    never_grafted = "; TPHD location state is not grafted without a validated translation"
+    if gc_state_reference_coherent_scene:
+        location_status = "reference"
+        location_detail = "kept " + ", ".join(sorted(LOCATION_RULE_NAMES)) + " from coherent GC reference"
+    elif gc_state_reference_body is not None:
+        location_status = "mixed"
+        location_detail = (
+            "player.return_place from paired GC reference; "
+            + ", ".join(sorted(LOCATION_RULE_NAMES - {"player.return_place"}))
+            + " from GC template"
+            + never_grafted
+        )
+    else:
+        location_status = "template"
+        location_detail = "kept " + ", ".join(sorted(LOCATION_RULE_NAMES)) + " from GC template" + never_grafted
+
     report.fields.extend(
         [
+            FieldResult("location_structs", location_status, location_detail),
             FieldResult(
                 "player_config",
                 "reference" if gc_state_reference_coherent_scene else "template",
@@ -343,8 +369,8 @@ def build_mapped_body(
             FieldResult(
                 "profile",
                 profile,
-                "safe copies only identity/basic stats; balanced adds inventory/location; "
-                "progress adds event/stage flags",
+                "safe copies only identity/basic stats; balanced adds inventory; "
+                "progress adds event/stage flags; location structs are never mapped from TPHD",
             ),
             FieldResult("hd_extra_tail", "dropped", "TPHD bytes 0xA94..0xDF7 have no GC quest-log destination"),
         ]

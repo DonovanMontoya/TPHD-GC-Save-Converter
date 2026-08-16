@@ -48,12 +48,72 @@ const RULES = [
 // retained, matching apply_gc_state_reference in tphd_to_gci.py.
 const REFERENCE_RANGES = [[0x058, 0x064], [0x1F0, 0x5F0], [0x7F0, 0x8F0]];
 
-// Cross-version location translation is unvalidated in the reverse direction,
-// so these stay native to the TPHD template. Mirrors LOCATION_RULE_NAMES.
+// Location structs are a mutually consistent bundle with no validated
+// cross-version translation in either direction, so they stay native to the
+// destination save. Mirrors LOCATION_RULE_NAMES in save_schema.py.
 const LOCATION_RULES = new Set([
   "player.horse_place", "player.return_place",
   "player.field_last_stay", "player.last_mark",
 ]);
+
+// The page derives the conversion direction from the source file itself rather
+// than asking: each direction needs exactly one HD save and one GCI, so the
+// format of the file being converted fully determines which way it goes.
+export function detectFormat(data) {
+  if (data.length === HD_SIZE) return "tphd";
+  if (data.length === GCI_SIZE && new TextDecoder("ascii").decode(data.subarray(0, 3)) === "GZ2") return "gc";
+  return null;
+}
+
+// A zeroed quest log still carries a valid checksum, so checksum validity alone
+// cannot tell a populated slot from an unused one. The player name does.
+export function gcSlotSummary(data) {
+  return [0, 1, 2].map((slot) => {
+    try {
+      const body = gcBody(data, slot);
+      let length = 0;
+      while (length < 0x10 && body[0x1B4 + length] !== 0) length += 1;
+      const name = new TextDecoder("ascii").decode(body.subarray(0x1B4, 0x1B4 + length)).trim();
+      return { slot, name, usable: name.length > 0 };
+    } catch {
+      return { slot, name: "", usable: false };
+    }
+  });
+}
+
+// Which quest log to target given a summary and the currently selected slot.
+// A usable selection is always kept, because the picker is re-rendered on every
+// option change and must not silently retarget a conversion the user aimed.
+export function chooseSlot(summary, current) {
+  if (summary[current]?.usable) return current;
+  return summary.find((entry) => entry.usable)?.slot ?? current;
+}
+
+function referenceOverlap(offset, size) {
+  let total = 0;
+  for (const [start, end] of REFERENCE_RANGES) {
+    total += Math.max(0, Math.min(offset + size, end) - Math.max(offset, start));
+  }
+  return total;
+}
+
+// Share of the GC quest-log body that ends up TPHD-derived; the rest is
+// inherited from the destination save. Derived from RULES so the copy on the
+// page cannot drift away from the mapping table.
+//
+// A reference is applied after the mapping rules, so any mapped byte inside
+// REFERENCE_RANGES is overwritten and must not be counted as a TPHD
+// contribution. Under progress that is stage_memory and event_flags, which is
+// most of what the profile appears to transfer.
+export function profileCoverage(profile, { reference = false } = {}) {
+  assertProfile(profile);
+  let mapped = 0;
+  for (const [name, gcOffset, size, , , confidence] of RULES) {
+    if (LOCATION_RULES.has(name) || !enabled(name, confidence, profile)) continue;
+    mapped += reference ? size - referenceOverlap(gcOffset, size) : size;
+  }
+  return mapped / GC_BODY_SIZE;
+}
 
 export function checksumPair(data) {
   let raw = 0;
@@ -141,7 +201,7 @@ export function tphdToGci(hd, template, { profile = "safe", slot = 0, reference 
   const body = new Uint8Array(gcBody(template, slot));
   for (const rule of RULES) {
     const [name, , , , , confidence] = rule;
-    if (enabled(name, confidence, profile)) applyRule(body, hd, rule);
+    if (!LOCATION_RULES.has(name) && enabled(name, confidence, profile)) applyRule(body, hd, rule);
   }
   if (reference) {
     const referenceBody = gcBody(reference, referenceSlot);

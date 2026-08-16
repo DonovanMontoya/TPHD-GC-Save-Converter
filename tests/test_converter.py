@@ -21,6 +21,7 @@ from tphd_to_gci import (
     GC_QUEST_LOG_OFFSETS,
     GC_QUEST_LOG_SIZE,
     HD_QUEST_LOG_SIZE,
+    FieldResult,
     SlotReport,
     apply_gc_state_reference,
     build_mapped_body,
@@ -142,6 +143,48 @@ class ProfileTests(unittest.TestCase):
         self.assertEqual(body[0x09C:0x0CC], self.hd[0x09C:0x0CC])
         self.assertEqual(body[0x058:0x064], bytes([0xA0]) * 12)
         self.assertEqual(body[0x1F0], 0xA0)
+
+    def test_forward_never_grafts_tphd_location_structs(self) -> None:
+        """Location is a coherent bundle; partial TPHD grafting is unvalidated."""
+        hd = bytearray(make_hd_slot(0x11))
+        for offset, size in ((0x040, 0x18), (0x058, 0x0C), (0x064, 0x1C), (0x080, 0x1C)):
+            hd[offset : offset + size] = bytes([0xC5]) * size
+        template = make_gci(0x40)
+        quest_log = template[GC_QUEST_LOG_OFFSETS[0] : GC_QUEST_LOG_OFFSETS[0] + GC_QUEST_LOG_SIZE]
+        for profile in ("safe", "balanced", "progress"):
+            body, report = build_mapped_body(bytes(hd), quest_log, 0, 0, profile)
+            for offset, size in ((0x040, 0x18), (0x058, 0x0C), (0x064, 0x1C), (0x080, 0x1C)):
+                self.assertEqual(
+                    body[offset : offset + size],
+                    quest_log[offset : offset + size],
+                    f"{profile} grafted TPHD location bytes at {offset:#x}",
+                )
+            self.assertFalse({field.name for field in report.fields} & LOCATION_RULE_NAMES)
+
+    def test_location_provenance_reports_each_reference_mode(self) -> None:
+        """An explicit reference grafts only return_place, so provenance is mixed."""
+        hd = make_hd_slot(0x11)
+        template = make_gci(0x40)
+        quest_log = template[GC_QUEST_LOG_OFFSETS[0] : GC_QUEST_LOG_OFFSETS[0] + GC_QUEST_LOG_SIZE]
+        reference = bytes([0x20]) * GC_QUEST_LOG_BODY_SIZE
+
+        def location_field(*args: object) -> FieldResult:
+            _body, report = build_mapped_body(hd, quest_log, 0, 0, "progress", *args)
+            return next(f for f in report.fields if f.name == "location_structs")
+
+        self.assertEqual(location_field().status, "template")
+
+        mixed = location_field(reference)
+        self.assertEqual(mixed.status, "mixed")
+        self.assertIn("player.return_place from paired GC reference", mixed.detail)
+        self.assertNotIn("player.return_place from GC template", mixed.detail)
+
+        self.assertEqual(location_field(reference, None, True).status, "reference")
+
+        # The mixed label must match the bytes actually emitted.
+        body, _report = build_mapped_body(hd, quest_log, 0, 0, "progress", reference)
+        self.assertEqual(body[0x058:0x064], reference[0x058:0x064])
+        self.assertEqual(body[0x040:0x058], quest_log[0x040:0x058])
 
     def test_progress_maps_structural_ranges(self) -> None:
         hd_without_scent = bytearray(self.hd)

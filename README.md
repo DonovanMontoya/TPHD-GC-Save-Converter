@@ -48,7 +48,8 @@ python3 gci_to_tphd.py input.gci ZTP00-template.dat ZTP00.dat \
 structures, and `progress` also maps the structurally compatible stage, visited
 room, and event blocks. Every location struct — return place, horse place,
 field last stay, and last mark — remains inherited from the TPHD template at all
-profiles, because cross-version location grafting is not validated. Reverse
+profiles, matching the forward direction, because cross-version location
+grafting is not validated. Reverse
 outputs have verified structure and checksums but still require Cemu/TPHD live
 gameplay validation; back up the original save before testing.
 
@@ -81,6 +82,15 @@ python3 tphd_to_gci.py CemuSave exported-progress-paired.gci \
 
 That keeps mapped TPHD stats/inventory while copying the GC return-place, stage
 memory, and event flags from the paired reference.
+
+Location structs — `player.return_place`, `player.horse_place`,
+`player.field_last_stay`, and `player.last_mark` — are never taken from TPHD in
+either direction. They form one mutually consistent bundle: `field_last_stay`
+carries region-discovery bits that pair with visited-room memory, and
+`last_mark` holds the Midna warp destination. Grafting part of that bundle
+across versions while the rest comes from a different save produces a scene
+state that never existed in either, so the whole bundle stays native to the
+destination until a paired-save diff validates a translation.
 
 For a collection of GameCube saves, the converter can rank every valid quest-log
 slot and choose a same-stage reference automatically. For the included dungeon
@@ -135,9 +145,11 @@ through live gameplay; exact inputs, hashes, and observations are recorded in
 - `safe`: most likely to load. Copies player/horse names, health, rupees, play
   time, death count, and clear count. Most progression remains from the GC
   template.
-- `balanced`: experimental. Adds inventory, item flags, item counts, location
-  structs, collectibles, letters, fishing, minigame records, and GC-normalized
-  wolf scent/sense/Midna attack flags when TPHD scent state is present.
+- `balanced`: experimental. Adds inventory, item flags, item counts,
+  collectibles, letters, fishing, minigame records, and GC-normalized wolf
+  scent/sense/Midna attack flags when TPHD scent state is present. It does not
+  map location structs; no profile does. To move location state, supply a
+  paired GC reference, which grafts its return place.
 - `progress`: experimental. Adds stage memory, visited-room memory, and event
   flags. This preserves more progress but is the highest-risk profile until
   those flags are fully validated against TPHD.
@@ -205,10 +217,19 @@ Current probe results:
 - `probe-visited_room_memory.gci`: loads.
 - `probe-event_flags.gci`: loads.
 
-The current `balanced` profile now excludes `player.return_place`, so it has
-the same load-safe shape as `exported-balanced-minus-return.gci`.
-The current `progress` profile also excludes `player.return_place`, so it has
-the same loader-safe shape as `exported-progress-minus-return.gci`.
+The current `balanced` and `progress` profiles exclude every location rule, not
+just `player.return_place`, so they no longer share a shape with
+`exported-balanced-minus-return.gci` or `exported-progress-minus-return.gci`.
+Those artifacts still carried `player.horse_place`, `player.field_last_stay`,
+and `player.last_mark` from TPHD, so their load results are not evidence for
+the current mapping.
+
+The load evidence for the shape that ships today is the 2026-08-14
+re-validation in `docs/dolphin-test-log.md`: a regenerated paired `progress`
+export reached `F_SP121` room 2 and went on to load actor archives, so it
+reaches live gameplay rather than stalling in a menu. That run is a stage/room
+load observation on the Null backend and does not by itself verify rupees,
+scent, or Midna riding.
 
 Focused scene-state probes are available in `probe-exports/` with names starting
 `probe-scene_progress_`. They test return-stage/current-stage restoration on
